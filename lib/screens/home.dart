@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -20,10 +19,9 @@ class HomeScreen extends StatelessWidget {
         title: Image.asset('assets/pilllogo.png', height: 30),
         actions: [
           IconButton(
-            icon:
-                const Icon(Icons.notifications_none, color: Color(0xFF0C1467)),
+            icon: const Icon(Icons.notifications_none, color: Color(0xFF0C1467)),
             onPressed: () {
-              // Navigate to notifications
+              // Notifications action
             },
           ),
         ],
@@ -34,7 +32,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Search bar
+              //  Search bar
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
@@ -51,35 +49,13 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
-                "Categories",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0C1467),
-                ),
-              ),
-              const SizedBox(height: 9),
-              // Categories Grid
-              GridView.count(
-                crossAxisCount: 3,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 0.75,
-                children: const [
-                  CategoryCard(title: 'Pain Relief', image: 'assets/pain.jpeg'),
-                  CategoryCard(title: 'Skin', image: 'assets/skin.png'),
-                  CategoryCard(title: 'Heart', image: 'assets/heart.png'),
-                  CategoryCard(
-                      title: 'Headache', image: 'assets/headache.jpeg'),
-                  CategoryCard(title: 'Muscles', image: 'assets/muscles.jpeg'),
-                  CategoryCard(
-                      title: 'Eye & Ear', image: 'assets/ear&nose.png'),
-                ],
-              ),
+
+              // 🧭 Categories Horizontal Scroll
+              const CategoryScroll(),
+
               const SizedBox(height: 20),
+
+              // ⭐ Features
               const Text(
                 "Features",
                 style: TextStyle(
@@ -89,77 +65,177 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              // Features using images instead of icons
+
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  FeatureIcon(
-                      image: 'assets/sypmptomchecker.png',
-                      label: "symptoms diagnoses"),
-                  FeatureIcon(
-                      image: 'assets/pointer.png', label: "Nearest Pharmacy"),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  FeatureIcon(
-                      image: 'assets/medicines_4278884.png',
-                      label: "Interaction Checker"),
-                  FeatureIcon(
-                      image: 'assets/document-scanner_11857562.png',
-                      label: "Prescription Scan"),
-                ],
-              ),
+  mainAxisAlignment: MainAxisAlignment.spaceAround,
+  children: const [
+    FeatureIcon(
+      image: 'assets/sypmptomchecker.png',
+      label: "Symptoms Diagnoses",
+      description: "Describe your symptoms\n and get AI-powered\n drug suggestions.",
+    ),
+    FeatureIcon(
+      image: 'assets/pointer.png',
+      label: "Nearest Pharmacy",
+      description: "Find pharmacies near\nyou with available\nstock.",
+    ),
+  ],
+),
+const SizedBox(height: 20),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceAround,
+  children: const [
+    FeatureIcon(
+      image: 'assets/medicines_4278884.png',
+      label: "Interaction Checker",
+      description: "Check if your medications\nare safe to take \ntogether.",
+    ),
+    FeatureIcon(
+      image: 'assets/document-scanner_11857562.png',
+      label: "Prescription Scan",
+      description: "Upload a prescription image \nand get instant drug \nidentification.",
+    ),
+  ],
+),
+
               const SizedBox(height: 30),
             ],
           ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF0C1467),
+        backgroundColor: primaryColor,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
-        type:BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home, size:30), label: ""),
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/scanner.png'), size:30), label: ""),
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/interaction checker.png'), size:30),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/chatbot.png'), size:30), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.home, size: 35), label: ""),
+          BottomNavigationBarItem(icon: ImageIcon(AssetImage('assets/scanner.png'), size: 35), label: ""),
+          BottomNavigationBarItem(icon: ImageIcon(AssetImage('assets/interaction checker.png'), size: 35), label: ""),
+          BottomNavigationBarItem(icon: ImageIcon(AssetImage('assets/chatbot.png'), size: 35), label: ""),
         ],
       ),
     );
   }
 }
 
-class CategoryCard extends StatelessWidget {
-  final String title;
-  final String image;
+// 🔁 Category Scroll Widget with interaction
+class CategoryScroll extends StatefulWidget {
+  const CategoryScroll({super.key});
 
-  const CategoryCard({super.key, required this.title, required this.image});
+  @override
+  State<CategoryScroll> createState() => _CategoryScrollState();
+}
+
+class _CategoryScrollState extends State<CategoryScroll> {
+  int selectedIndex = 0;
+
+  final List<Map<String, String>> categories = [
+    {'title': 'Pain Relief', 'image': 'assets/pain.jpeg'},
+    {'title': 'Skin', 'image': 'assets/skin.png'},
+    {'title': 'Heart', 'image': 'assets/heart.png'},
+    {'title': 'Headache', 'image': 'assets/headache.jpeg'},
+    {'title': 'Muscles', 'image': 'assets/muscles.jpeg'},
+    {'title': 'Eye & Ear', 'image': 'assets/ear&nose.png'},
+    {'title': 'Cold & Flu', 'image': 'assets/cold&flu.png'},
+    {'title': 'Diabetes', 'image': 'assets/diabetes.png'},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: Image.asset(image)),
-        const SizedBox(height: 4),
-        Text(title, style: const TextStyle(fontSize: 13)),
+        const Text(
+          "Categories",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0C1467),
+          ),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 100,
+          child: Row(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    final isSelected = index == selectedIndex;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        width: isSelected ? 90 : 75,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    // ignore: deprecated_member_use
+                                    color: Colors.grey.withOpacity(0.3),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  )
+                                ]
+                              : [],
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  categories[index]['image']!,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              categories[index]['title']!,
+                              style: TextStyle(
+                                fontSize: isSelected ? 14 : 15,
+
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Color(0xFF0C1467)),
+            ],
+          ),
+        ),
       ],
     );
   }
 }
 
+// 🔁 Feature Icon Widget
 class FeatureIcon extends StatelessWidget {
   final String image;
   final String label;
+  final String description;
 
-  const FeatureIcon({super.key, required this.image, required this.label});
+  const FeatureIcon({
+    super.key,
+    required this.image,
+    required this.label,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +245,20 @@ class FeatureIcon extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(fontSize: 12),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0C1467),
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 2),
+        Text(
+          description,
+          style: const TextStyle(
+            fontSize: 11,
+            color: Color.fromARGB(255, 149, 143, 143),
+          ),
           textAlign: TextAlign.center,
         ),
       ],
