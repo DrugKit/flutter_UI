@@ -40,12 +40,12 @@ class NearestPharmacyScreen extends StatelessWidget {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
                     "Your current location....",
                     style: TextStyle(color: Colors.white),
                   ),
-                  Icon(Icons.my_location, color: Colors.white),
+                  Image.asset('assets/locationIcon.png', color: Colors.white, height: 24, width: 24),
                 ],
               ),
             ),
