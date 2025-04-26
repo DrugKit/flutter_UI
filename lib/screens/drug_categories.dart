@@ -1,202 +1,154 @@
 import 'package:flutter/material.dart';
+import 'package:drugkit/screens/drugdetails.dart';
 
-class Drug {
-  final String name;
-  final String type;
-  final String imagePath;
+class CategoryDrugsScreen extends StatelessWidget {
+  final String categoryName;
 
-  Drug({required this.name, required this.type, required this.imagePath});
-}
-
-class DrugsListScreen extends StatefulWidget {
-  final String categoryTitle;
-
-  DrugsListScreen({required this.categoryTitle});
-
-  @override
-  _DrugsListScreenState createState() => _DrugsListScreenState();
-}
-
-class _DrugsListScreenState extends State<DrugsListScreen> {
-  final List<Drug> allDrugs = List.generate(
-    24,
-    (index) => Drug(
-      name: ['Panadol', 'Mediator', 'Oplex-N'][index % 3],
-      type: ['Tablets', 'Tablets', 'Syrup'][index % 3],
-      imagePath: [
-        'assets/panadol.png',
-        'assets/mediator.png',
-        'assets/oplex.png'
-      ]
-      [index % 3],
-    ),
-  );
-
-  int currentPage = 1;
-  final int drugsPerPage = 12;
-
-  List<Drug> getPaginatedDrugs() {
-    final startIndex = (currentPage - 1) * drugsPerPage;
-    final endIndex = startIndex + drugsPerPage;
-    return allDrugs.sublist(
-        startIndex, endIndex > allDrugs.length ? allDrugs.length : endIndex);
-  }
+  const CategoryDrugsScreen({required this.categoryName});
 
   @override
   Widget build(BuildContext context) {
-    final paginatedDrugs = getPaginatedDrugs();
-    final totalPages = (allDrugs.length / drugsPerPage).ceil();
+    final drugs = List.generate(
+      12,
+      (index) => {
+        'name': index % 2 == 0 ? 'Panadol' : 'Mediator',
+        'form': index % 2 == 0 ? 'Tablets' : 'Syrup',
+        'image': 'assets/panadol.png',
+      },
+    );
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        toolbarHeight: 0, // Hide default app bar space
+        toolbarHeight: 0,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              // 🔍 Search bar
-              Container(
-                margin: EdgeInsets.only(bottom: 16),
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: Color(0xFF2C2C6B), // Dark blue
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    hintStyle: TextStyle(color: Colors.white),
-                    border: InputBorder.none,
-                    icon: Icon(Icons.search, color: Colors.white),
-                  ),
-                  style: TextStyle(color: Colors.white),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            SizedBox(height: 16),
+
+            // Search bar
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Color(0xFF0C1467),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TextField(
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  hintStyle: TextStyle(color: Colors.white),
+                  icon: Icon(Icons.search, color: Colors.white),
+                  border: InputBorder.none,
                 ),
               ),
+            ),
 
-              // 🩺 Category title
-              Text(
-                widget.categoryTitle,
+            SizedBox(height: 16),
+
+            // Centered category title
+            Center(
+              child: Text(
+                categoryName,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF2C2C6B),
+                  color: Color(0xFF0C1467),
                 ),
               ),
+            ),
 
-              SizedBox(height: 16),
+            SizedBox(height: 12),
 
-              // 🧩 Drug cards
-              Expanded(
-                child: GridView.builder(
-                  itemCount: paginatedDrugs.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemBuilder: (context, index) {
-                    final drug = paginatedDrugs[index];
-
-                    return InkWell(
-                      onTap: () {
-                        // Navigate to details screen (to be implemented)
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: EdgeInsets.all(8),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Image.asset(
-                                drug.imagePath,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              drug.name,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              drug.type,
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+            // Grid of drugs
+            Expanded(
+              child: GridView.builder(
+                itemCount: drugs.length,
+                padding: EdgeInsets.only(bottom: 16),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.65,
                 ),
-              ),
-
-              SizedBox(height: 10),
-
-              // 🔢 Pagination
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(totalPages, (index) {
-                  final pageNum = index + 1;
-                  final isSelected = pageNum == currentPage;
-
+                itemBuilder: (context, index) {
+                  final drug = drugs[index];
                   return GestureDetector(
                     onTap: () {
-                      setState(() {
-                        currentPage = pageNum;
-                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => DrugDetailsScreen(drug: drug),
+                        ),
+                      );
                     },
                     child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4),
-                      padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: isSelected ? Color(0xFF2C2C6B) : Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey),
+                        color: Color(0xFFF6F6F6),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(
-                        '$pageNum',
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      padding: EdgeInsets.all(8),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Image.asset(
+                              drug['image']!,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                          SizedBox(height: 6),
+                          Text(
+                            drug['name']!,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            drug['form']!,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
                       ),
                     ),
                   );
-                }),
+                },
               ),
+            ),
 
-              SizedBox(height: 10),
-            ],
-          ),
+            // Pagination
+            SizedBox(
+              height: 40,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 8,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        backgroundColor:
+                            index == 0 ? Color(0xFF0C1467) : Colors.white,
+                        foregroundColor:
+                            index == 0 ? Colors.white : Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(color: Colors.blue),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: Text('${index + 1}'),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            SizedBox(height: 8),
+          ],
         ),
-      ),
-      // 🏠 Bottom navigation bar if needed
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        selectedItemColor: Color(0xFF2C2C6B),
-        unselectedItemColor: Colors.grey,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home, size: 35), label: ""),
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/scanner.png'), size: 35),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/interaction checker.png'),
-                  size: 35),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/chatbot.png'), size: 35),
-              label: ""),
-        ],
       ),
     );
   }

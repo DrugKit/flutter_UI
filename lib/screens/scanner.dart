@@ -6,7 +6,7 @@ class BarcodeScannerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[700],
+      backgroundColor: const Color.fromARGB(167, 222, 221, 221),
       body: SafeArea(
         child: Stack(
           alignment: Alignment.center,
@@ -14,7 +14,7 @@ class BarcodeScannerScreen extends StatelessWidget {
             // Barcode illustration in center
             Center(
               child: Image.asset(
-                'assets/barcode_icon.png', // Replace with your actual asset
+                'assets/barcode-scan.png', 
                 width: 200,
                 height: 200,
               ),

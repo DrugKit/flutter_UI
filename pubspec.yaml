@@ -77,6 +77,12 @@ flutter:
     - assets/scanner.png
     - assets/interaction checker.png
     - assets/chatbot.png
+    - assets/cold&flu.png
+    - assets/diabetes.png
+    - assets/panadol.png
+    - assets/location.png
+    - assets/locationIcon.png
+    - assets/barcode-scan.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

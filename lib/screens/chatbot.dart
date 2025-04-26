@@ -59,7 +59,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                       constraints: BoxConstraints(maxWidth: 250),
                       decoration: BoxDecoration(
                         color: msg['isUser']
-                            ? Color(0xFFB0B0D6) // user messages (light purple)
+                            ? Color.fromARGB(255, 62, 62, 106) // user messages (light purple)
                             : Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
