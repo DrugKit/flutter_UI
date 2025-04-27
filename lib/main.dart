@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 //import 'package:drugkit/screens/welcome.dart'; 
-//import 'package:drugkit/screens/signup.dart';
-//import 'package:drugkit/screens/Signup_verification.dart'; 
-//import 'package:drugkit/screens/verification_done.dart';
+import 'package:drugkit/screens/signup.dart';
+import 'package:drugkit/screens/Signup_verification.dart'; 
+import 'package:drugkit/screens/verification_done.dart';
 //import 'package:drugkit/screens/login.dart'; 
 //import 'package:drugkit/screens/forgetpassword.dart';
 //import 'package:drugkit/screens/verifyemail.dart';
@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 //import 'package:drugkit/screens/prescriptionscan_loading.dart';
 //import 'package:drugkit/screens/prescription_data.dart';
 //import 'package:drugkit/screens/nearestpharmacy.dart ';
-import 'package:drugkit/screens/scanner.dart';
+//import 'package:drugkit/screens/scanner.dart';
 //import 'package:drugkit/screens/chatbot.dart';
 
 
@@ -36,9 +36,9 @@ class DrugKitApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
     // home: CategoryDrugsScreen(categoryName: 'Heart'),  // Change this to the desired initial screen
-     home: BarcodeScannerScreen(),  // Change this to the desired initial screen
+     home: SignUpScreen(),  // Change this to the desired initial screen
       // home: const WelcomeScreen(), // Uncomment this line to use the WelcomeScreen as the initial screen
-  
+
 
     );
   }

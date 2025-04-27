@@ -1,107 +1,14 @@
-// import 'package:flutter/material.dart';
-
-// class LoginScreen extends StatelessWidget {
-//   const LoginScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-//         child: Center(
-//           child: SingleChildScrollView(
-//             child: Column(
-//               children: [
-//                 const Text(
-//                   "Welcome Back",
-//                   style: TextStyle(
-//                     fontSize: 26,
-//                     fontWeight: FontWeight.bold,
-//                     color: Colors.indigo,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 30),
-//                 TextField(
-//                   decoration: InputDecoration(
-//                     labelText: "Email",
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                   ),
-//                 ),
-//                 const SizedBox(height: 20),
-//                 TextField(
-//                   obscureText: true,
-//                   decoration: InputDecoration(
-//                     labelText: "Password",
-//                     suffixIcon: Icon(Icons.visibility_off),
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                   ),
-//                 ),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: [
-//                     Row(
-//                       children: [
-//                         Checkbox(value: true, onChanged: (_) {}),
-//                         const Text("Remember me"),
-//                       ],
-//                     ),
-//                     TextButton(
-//                       onPressed: () {},
-//                       child: const Text(
-//                         "Forgot Password?",
-//                         style: TextStyle(color: Colors.indigo),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//                 const SizedBox(height: 10),
-//                 ElevatedButton(
-//                   onPressed: () {},
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.indigo,
-//                     minimumSize: const Size.fromHeight(50),
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                   ),
-//                   child: const Text("Sign in"),
-//                 ),
-//                 const SizedBox(height: 20),
-//                 const Text("Sign in with"),
-//                 const SizedBox(height: 10),
-//                 IconButton(
-//                   onPressed: () {},
-//                   icon: const Icon(Icons.g_mobiledata, size: 36, color: Colors.red),
-//                 ),
-//                 const SizedBox(height: 10),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     const Text("Don't have an account?"),
-//                     TextButton(
-//                       onPressed: () {},
-//                       child: const Text("Sign up"),
-//                     ),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +36,8 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 30),
+
+                // Email
                 TextField(
                   decoration: InputDecoration(
                     labelText: "Email",
@@ -141,18 +50,33 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+
+                // Password
                 TextField(
-                  obscureText: true,
+                  obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
                     labelText: "Password",
-                    suffixIcon: const Icon(Icons.visibility_off),
+                    hintText: "Enter your password",
                     border: outlineBorder,
                     enabledBorder: outlineBorder,
                     focusedBorder: outlineBorder,
                     filled: true,
                     fillColor: Colors.white,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
                   ),
                 ),
+
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -177,11 +101,13 @@ class LoginScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
+
+                // Sign In Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _onSignIn,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0C1467),
                       shape: RoundedRectangleBorder(
@@ -190,11 +116,11 @@ class LoginScreen extends StatelessWidget {
                     ),
                     child: const Text(
                       "Sign in",
-                      style: TextStyle(fontSize: 16
-                      , color: Colors.white),
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 25),
                 Row(
                   children: const [
@@ -207,16 +133,20 @@ class LoginScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 15),
+
+                // Google Sign In
                 GestureDetector(
                   onTap: () {
                     // Handle Google Sign In
                   },
                   child: Image.asset(
-                    'assets/google.png', // Add your actual image in assets
+                    'assets/google.png',
                     height: 45,
                   ),
                 ),
                 const SizedBox(height: 8),
+
+                // Sign Up link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -239,6 +169,36 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _onSignIn() {
+    _showLoadingDialog();
+    // محاكاة اتصال بالسيرفر
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pop(context); // loading exit
+      // هنا ممكن تنقلي المستخدم للـ Home Screen مثلاً
+    });
+  }
+
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              CircularProgressIndicator(color: Color(0xFF0C1467)),
+              SizedBox(height: 20),
+              Text('Signing you in, please wait...'),
+            ],
+          ),
+        );
+      },
     );
   }
 }
