@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:drugkit/logic/sign_up/cubit/sign_up_cubit.dart'; // تأكد أنك مستورد الكيوبت
+import 'package:drugkit/Navigation/app_navigation.dart';
+import 'package:drugkit/Navigation/routes_names.dart';
+
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -37,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SnackBar(content: Text('تم التسجيل بنجاح!')),
               );
               // تقدر تودي المستخدم لشاشة ثانية هنا
-              // Navigator.pushReplacement(...);
+             AppNavigator.pushReplacement(context, RouteNames.verifySignup );
             } else if (state is SignUpError) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.errorMessage)),
