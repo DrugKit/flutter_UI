@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:drugkit/Navigation/app_navigation.dart';
+import 'package:drugkit/Navigation/routes_names.dart';
 
 class SetNewPasswordScreen extends StatelessWidget {
   const SetNewPasswordScreen({super.key});
@@ -78,7 +80,7 @@ class SetNewPasswordScreen extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle update password logic
+                  AppNavigator.pushReplacement(context, RouteNames.resetDone);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0C1467),

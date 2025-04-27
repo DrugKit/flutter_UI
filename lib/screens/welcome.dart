@@ -1,5 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:drugkit/Navigation/app_navigation.dart';
+import 'package:drugkit/Navigation/routes_names.dart';
+//import 'package:drugkit/screens/login.dart'; // تأكد أنك مستورد الشاشة الصحيحة
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -37,7 +40,8 @@ class WelcomeScreen extends StatelessWidget {
                       alignment: Alignment.bottomLeft,
                       child: TextButton(
                         onPressed: () {
-                          // Navigate to login
+                          AppNavigator.push(context, RouteNames.login);
+
                         },
                         child: const Text(
                           "Log in",
@@ -66,7 +70,8 @@ class WelcomeScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       child: GestureDetector(
                         onTap: () {
-                          // Navigate to sign up
+                          AppNavigator.push(context, RouteNames.signup);
+
                         },
                         child: const Text(
                           "Sign up",

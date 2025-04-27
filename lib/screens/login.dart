@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'dart:math'; // علشان نختار عشوائي بين نجاح أو فشل
+//just for UX , modify it later 
+import 'package:drugkit/Navigation/app_navigation.dart';
+import 'package:drugkit/Navigation/routes_names.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -9,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
+  bool _rememberMe = false; // ✅ متغير جديد للتحكم في Checkbox
 
   @override
   Widget build(BuildContext context) {
@@ -84,15 +88,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       children: [
                         Checkbox(
-                          value: true,
-                          onChanged: (_) {},
+                          value: _rememberMe,
+                          onChanged: (value) {
+                            setState(() {
+                              _rememberMe = value!;
+                            });
+                          },
                           activeColor: const Color(0xFF0C1467),
                         ),
                         const Text("Remember me"),
                       ],
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        AppNavigator.push(context, RouteNames.forgotPassword);
+                      },
                       child: const Text(
                         "Forgot Password?",
                         style: TextStyle(color: Color(0xFF0C1467)),
@@ -108,6 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: _onSignIn,
+
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0C1467),
                       shape: RoundedRectangleBorder(
@@ -152,7 +163,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const Text("Don't have an account?"),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        AppNavigator.pushReplacement(context, RouteNames.signup);
+                      },
                       child: const Text(
                         "Sign up",
                         style: TextStyle(
@@ -174,10 +187,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onSignIn() {
     _showLoadingDialog();
-    // محاكاة اتصال بالسيرفر
+    // محاكاة الاتصال بالسيرفر
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pop(context); // loading exit
-      // هنا ممكن تنقلي المستخدم للـ Home Screen مثلاً
+      Navigator.pop(context); // نغلق الـ Loading Dialog
+
+      bool isSuccess = Random().nextBool(); // عشوائي نجاح أو فشل
+
+      if (isSuccess) {
+          AppNavigator.pushReplacement(context, RouteNames.home);
+      } else {
+        _showErrorDialog('Login Failed. Please try again.');
+      }
     });
   }
 
@@ -199,6 +219,56 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       },
+    );
+  }
+
+  void _showSuccessDialog(String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.check_circle, color: Colors.green, size: 60),
+            const SizedBox(height: 20),
+            Text(
+              message,
+              style: const TextStyle(color: Colors.green, fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, color: Colors.red, size: 60),
+            const SizedBox(height: 20),
+            Text(
+              message,
+              style: const TextStyle(color: Colors.red, fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

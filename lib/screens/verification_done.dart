@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:drugkit/Navigation/app_navigation.dart';
+import 'package:drugkit/Navigation/routes_names.dart';
 
 class SuccessScreen extends StatelessWidget {
   const SuccessScreen({super.key});
@@ -35,7 +37,9 @@ class SuccessScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                   AppNavigator.pushReplacement(context, RouteNames.login);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0C1467),
                   minimumSize: const Size.fromHeight(50),
