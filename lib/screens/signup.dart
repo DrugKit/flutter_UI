@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:drugkit/logic/sign_up/cubit/sign_up_cubit.dart'; // تأكد أنك مستورد الكيوبت
+import 'package:drugkit/logic/sign_up/cubit/sign_up_cubit.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -16,7 +16,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  bool _isButtonPressed = false;
   bool _isPasswordVisible = false;
 
   @override
@@ -156,28 +155,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       const SizedBox(height: 25),
                       GestureDetector(
-                        onTapDown: (_) {
-                          setState(() {
-                            _isButtonPressed = true;
-                          });
-                        },
-                        onTapUp: (_) {
-                          setState(() {
-                            _isButtonPressed = false;
-                          });
+                        onTap: () {
                           _onSignUp(context);
                         },
-                        onTapCancel: () {
-                          setState(() {
-                            _isButtonPressed = false;
-                          });
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 100),
-                          curve: Curves.easeInOut,
-                          width: _isButtonPressed
-                              ? MediaQuery.of(context).size.width * 0.95
-                              : double.infinity,
+                        child: Container(
+                          width: double.infinity,
                           height: 48,
                           decoration: BoxDecoration(
                             color: const Color(0xFF0C1467),
@@ -211,6 +193,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onSignUp(BuildContext context) {
     if (_formKey.currentState!.validate()) {
+      print(_emailController.text);
+      print(_passwordController.text);
+      print(_phoneController.text);
+      print(_fullNameController.text);
       final cubit = BlocProvider.of<SignUpCubit>(context);
       cubit.signUp(
         context,
