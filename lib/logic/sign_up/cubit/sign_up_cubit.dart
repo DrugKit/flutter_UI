@@ -13,39 +13,48 @@ class SignUpCubit extends Cubit<SignUpState> {
   }
 
   final DioHelper _dioHelper = DioHelper();
-  Future<void> signUp(context,{required String email, required String password, required String phoneNumber, required String name}) async {
+  Future<void> signUp(context,
+      {required String email,
+      required String password,
+      required String phoneNumber,
+      required String name}) async {
     emit(SignUpLoading());
+    print(email);
+      print(password);
+      print(phoneNumber);
+      print(name);
     try {
-      final response = await _dioHelper.postData(
-          path: ApiUrl.signup, body: {"email": email, "password": password, "phoneNumber": phoneNumber, "name": name});
+      final response = await _dioHelper.postData(path: ApiUrl.signup, body: {
+        "email": email,
+        "password": password,
+        "phoneNumber": phoneNumber,
+        "name": name
+      });
       emit(SignUpSucces());
-    }
-    catch (e) {
+    } catch (e) {
+      print(e.toString());
       if (e is DioException) {
         switch (e.type) {
           case DioExceptionType.connectionTimeout:
             emit(SignUpError("انتهى وقت الاتصال بالخادم. حاول مرة أخرى."));
             break;
-          case DioExceptionType .sendTimeout:
+          case DioExceptionType.sendTimeout:
             emit(SignUpError("انتهى وقت إرسال الطلب. حاول مرة أخرى."));
             break;
-          case DioExceptionType .receiveTimeout:
+          case DioExceptionType.receiveTimeout:
             emit(SignUpError("انتهى وقت الاستجابة من الخادم. حاول مرة أخرى."));
             break;
-          case DioExceptionType .cancel:
+          case DioExceptionType.cancel:
             emit(SignUpError("تم إلغاء الطلب."));
             break;
-          case DioExceptionType .badResponse:
+          case DioExceptionType.badResponse:
             final statusCode = e.response?.statusCode;
             if (statusCode == 400) {
-                emit(SignUpError(e.response?.data));
-              }
-              
-            else if(statusCode == 401){
+              emit(SignUpError(e.response?.data));
+            } else if (statusCode == 401) {
               // log(" Error: ${e.response?.data}");
               emit(SignUpError("${e.response?.data} حدث خطا ً"));
-            }
-            else if (statusCode == 404) {
+            } else if (statusCode == 404) {
               // log("Not Found: ${e.response?.data}");
               emit(SignUpError("${e.response?.data} غير موجود "));
             } else if (statusCode == 500) {
@@ -56,16 +65,15 @@ class SignUpCubit extends Cubit<SignUpState> {
               emit(SignUpError("حدث خطأ غير معروف. حاول مرة أخرى."));
             }
             break;
-          case DioExceptionType .connectionError:
+          case DioExceptionType.connectionError:
           default: // Added default case for unexpected errors
             emit(SignUpError(" تحقق من اتصال الإنترنت الخاص بك."));
             break;
         }
       } else {
         //log("Unknown error: ${e.toString()}");
-        emit(SignUpError("حدث خطأ غير معروف. حاول مرة أخرى."));
+        emit(SignUpError("حدث خطأ غير معروف. حاول مرة أخرى.${e.toString()}"));
       }
     }
   }
-
 }
