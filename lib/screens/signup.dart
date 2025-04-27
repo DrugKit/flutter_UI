@@ -1,8 +1,21 @@
-
 import 'package:flutter/material.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  bool _isButtonPressed = false;
+  bool _isPasswordVisible = false; // 👈 أضفنا ده عشان إظهار الباسورد
 
   @override
   Widget build(BuildContext context) {
@@ -16,96 +29,174 @@ class SignUpScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 60),
-              const Text(
-                'Get Started',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0C1467),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 60),
+                const Text(
+                  'Get Started',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0C1467),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 30),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Full Name',
-                  hintText: 'Enter Full Name',
-                  border: outlineBorder,
-                  enabledBorder: outlineBorder,
-                  focusedBorder: outlineBorder,
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'Enter Email',
-                  border: outlineBorder,
-                  enabledBorder: outlineBorder,
-                  focusedBorder: outlineBorder,
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Enter Password',
-                  border: outlineBorder,
-                  enabledBorder: outlineBorder,
-                  focusedBorder: outlineBorder,
-                  filled: true,
-                  fillColor: Colors.white,
-                  suffixIcon: const Icon(Icons.visibility_off),
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Phone',
-                  hintText: 'Enter Phone Number',
-                  border: outlineBorder,
-                  enabledBorder: outlineBorder,
-                  focusedBorder: outlineBorder,
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 25),
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to verification screen
+                const SizedBox(height: 30),
+                TextFormField(
+                  controller: _fullNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Full Name',
+                    hintText: 'Enter Full Name',
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Full Name is required';
+                    }
+                    return null;
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0C1467),
-                    shape: RoundedRectangleBorder(
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    hintText: 'Enter Email',
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  validator: (value) {
+                    if (value == null ||
+                        !RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
+                            .hasMatch(value.trim())) {
+                      return 'Enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+
+                // 🔥 هنا تعديل الباسورد مع أيقونة إظهار/إخفاء
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: !_isPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    hintText: 'Enter Password',
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                    filled: true,
+                    fillColor: Colors.white,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: _phoneController,
+                  decoration: InputDecoration(
+                    labelText: 'Phone',
+                    hintText: 'Enter Phone Number',
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  validator: (value) {
+                    if (value == null ||
+                        !RegExp(r'^[0-9]{11}$').hasMatch(value.trim())) {
+                      return 'Phone number must be exactly 11 digits';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 25),
+
+                // ✨ الزرار مع الانيميشن لما المستخدم يضغط عليه
+                GestureDetector(
+                  onTapDown: (_) {
+                    setState(() {
+                      _isButtonPressed = true;
+                    });
+                  },
+                  onTapUp: (_) {
+                    setState(() {
+                      _isButtonPressed = false;
+                    });
+                    _onSignUp();
+                  },
+                  onTapCancel: () {
+                    setState(() {
+                      _isButtonPressed = false;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.easeInOut,
+                    width: _isButtonPressed
+                        ? MediaQuery.of(context).size.width * 0.95
+                        : double.infinity,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0C1467),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 30),
-            ],
+
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _onSignUp() {
+    if (_formKey.currentState!.validate()) {
+      // ✅ هنا البيانات جاهزة تتبعت للـ Backend
+      print('Registering User...');
+      print('Full Name: ${_fullNameController.text}');
+      print('Email: ${_emailController.text}');
+      print('Password: ${_passwordController.text}');
+      print('Phone: ${_phoneController.text}');
+    }
   }
 }
