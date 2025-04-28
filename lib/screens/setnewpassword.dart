@@ -1,104 +1,146 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:drugkit/Navigation/app_navigation.dart';
 import 'package:drugkit/Navigation/routes_names.dart';
+import 'package:drugkit/logic/reset_password/reset_password_cubit.dart';
 
-class SetNewPasswordScreen extends StatelessWidget {
-  const SetNewPasswordScreen({super.key});
+class SetNewPasswordScreen extends StatefulWidget {
+  final String email;
+  final String resetCode;
+
+  const SetNewPasswordScreen({
+    super.key,
+    required this.email,
+    required this.resetCode,
+  });
+
+  @override
+  State<SetNewPasswordScreen> createState() => _SetNewPasswordScreenState();
+}
+
+class _SetNewPasswordScreenState extends State<SetNewPasswordScreen> {
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
-    final outlineBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: const BorderSide(color: Colors.grey),
+    return BlocProvider(
+      create: (_) => ResetPasswordCubit(),
+      child: BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
+        listener: (context, state) {
+          if (state is ResetPasswordLoading) {
+            _showLoadingDialog();
+          } else if (state is ResetPasswordSuccess) {
+            Navigator.pop(context); // قفل اللودينج
+            AppNavigator.pushReplacement(context, RouteNames.resetDone);
+          } else if (state is ResetPasswordError) {
+            Navigator.pop(context); // قفل اللودينج
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.errorMessage)),
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Set New Password",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0C1467),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    _buildPasswordField(_passwordController, "New Password"),
+                    const SizedBox(height: 15),
+                    _buildPasswordField(
+                        _confirmPasswordController, "Confirm Password"),
+                    const SizedBox(height: 30),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          if (_passwordController.text ==
+                              _confirmPasswordController.text) {
+                            ResetPasswordCubit.get(context).resetPassword(
+                              email: widget.email,
+                              resetCode: widget.resetCode,
+                              newPassword: _passwordController.text.trim(),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Passwords do not match.")),
+                            );
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0C1467),
+                        minimumSize: const Size.fromHeight(50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        "Reset Password",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
+  }
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+  Widget _buildPasswordField(TextEditingController controller, String label) {
+    return TextFormField(
+      controller: controller,
+      obscureText: !_isPasswordVisible,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+          ),
           onPressed: () {
-            Navigator.pop(context);
+            setState(() {
+              _isPasswordVisible = !_isPasswordVisible;
+            });
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Set a new password",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0C1467),
-              ),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              "Create a new password, Ensure it differs\nfrom the previous ones for security",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-                fontWeight: FontWeight.bold
-              ),
-            ),
-            const SizedBox(height: 30),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Password",
-                hintText: "Enter new password",
-                suffixIcon: const Icon(Icons.visibility_off),
-                border: outlineBorder,
-                enabledBorder: outlineBorder,
-                focusedBorder: outlineBorder,
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Confirm Password",
-                hintText: "Re-enter new password",
-                suffixIcon: const Icon(Icons.visibility_off),
-                border: outlineBorder,
-                enabledBorder: outlineBorder,
-                focusedBorder: outlineBorder,
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  AppNavigator.pushReplacement(context, RouteNames.resetDone);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0C1467),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  "Update Password",
-                  style: TextStyle(fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      validator: (value) {
+        if (value == null || value.length < 6) {
+          return "Password must be at least 6 characters.";
+        }
+        return null;
+      },
+    );
+  }
+
+  void _showLoadingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
     );
   }
 }
