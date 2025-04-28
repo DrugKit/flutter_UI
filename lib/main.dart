@@ -1,3 +1,4 @@
+import 'package:drugkit/logic/forget_password/forget_password_cubit.dart';
 import 'package:drugkit/logic/login/login_cubit.dart';
 import 'package:drugkit/logic/verification/verification_cubit.dart';
 import 'package:drugkit/network/api_service.dart';
@@ -54,9 +55,24 @@ class DrugKitApp extends StatelessWidget {
               child: const LoginScreen(),
             ),
         RouteNames.forgotPassword: (context) => const ForgotPasswordScreen(),
-        RouteNames.verifyEmail: (context) => const VerifyEmailScreen(),
+        RouteNames.verifyEmail: (context) {
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
+          return BlocProvider(
+            create: (_) => ForgetPasswordCubit(),
+            child: VerifyEmailScreen(email: args['email']),
+          );
+        },
+
         RouteNames.passwordResetDone: (context) => const PasswordResetScreen(),
-        RouteNames.setNewPassword: (context) => const SetNewPasswordScreen(),
+        RouteNames.setNewPassword: (context) {
+          final args =
+              ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+          return SetNewPasswordScreen(
+            email: args['email']!,
+            resetCode: args['resetCode']!,
+          );
+        },
         RouteNames.resetDone: (context) => const SetNewPassDoneScreen(),
         RouteNames.home: (context) => const HomeScreen(),
       },
