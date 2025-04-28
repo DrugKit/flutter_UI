@@ -1,3 +1,4 @@
+import 'package:drugkit/network/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:drugkit/screens/welcome.dart'; 
 import 'package:drugkit/screens/signup.dart';
@@ -20,7 +21,9 @@ import 'package:drugkit/screens/setnewpass_done.dart';
 //import 'package:drugkit/screens/chatbot.dart';
 import 'package:drugkit/Navigation/routes_names.dart ';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DioHelper.init();
   runApp(const DrugKitApp());
 }
 
