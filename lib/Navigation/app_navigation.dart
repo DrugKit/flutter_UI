@@ -7,7 +7,8 @@ class AppNavigator {
   }
 
   /// ينقلك لشاشة جديدة (ويمسح الشاشة القديمة - مفيش رجوع)
-  static void pushReplacement(BuildContext context, String routeName, [Object? arg]) {
+  static void pushReplacement(BuildContext context, String routeName,
+      [Object? arg]) {
     if (arg != null) {
       Navigator.pushReplacementNamed(context, routeName, arguments: arg);
     } else {
