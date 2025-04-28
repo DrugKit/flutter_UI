@@ -10,4 +10,5 @@ class RouteNames {
   static const String setNewPassword = '/set_new_password';
   static const String resetDone = '/reset_done';
   static const String home = '/home';
+  
 }

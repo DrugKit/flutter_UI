@@ -49,7 +49,7 @@ class DrugKitApp extends StatelessWidget {
       RouteNames.passwordResetDone: (context) => const PasswordResetScreen(),
       RouteNames.setNewPassword: (context) => const SetNewPasswordScreen(),
       RouteNames.resetDone: (context) => const SetNewPassDoneScreen(),
-      RouteNames.home: (context) => const HomeScreen(),
+        RouteNames.home: (context) => const HomeScreen(),
 }
 
 
