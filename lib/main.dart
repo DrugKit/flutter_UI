@@ -1,3 +1,4 @@
+import 'package:drugkit/logic/login/login_cubit.dart';
 import 'package:drugkit/logic/verification/verification_cubit.dart';
 import 'package:drugkit/network/api_service.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,10 @@ class DrugKitApp extends StatelessWidget {
         RouteNames.signup: (context) => const SignUpScreen(),
         // RouteNames.verifySignup: (context) => const VerificationCodeScreen(),
         RouteNames.signupDone: (context) => const SuccessScreen(),
-        RouteNames.login: (context) => const LoginScreen(),
+        RouteNames.login: (context) => BlocProvider(
+              create: (_) => LoginCubit(),
+              child: const LoginScreen(),
+            ),
         RouteNames.forgotPassword: (context) => const ForgotPasswordScreen(),
         RouteNames.verifyEmail: (context) => const VerifyEmailScreen(),
         RouteNames.passwordResetDone: (context) => const PasswordResetScreen(),
