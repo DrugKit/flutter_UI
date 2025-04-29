@@ -14,14 +14,14 @@ import 'package:drugkit/screens/passwordreset.dart';
 import 'package:drugkit/screens/setnewpassword.dart';
 import 'package:drugkit/screens/setnewpass_done.dart';
 import 'package:drugkit/screens/home.dart';
-// import 'package:drugkit/screens/drug_categories.dart';
-//import 'package:drugkit/screens/drugdetails.dart';
+import 'package:drugkit/screens/drug_categories.dart';
+import 'package:drugkit/screens/drugdetails.dart';
 // import 'package:drugkit/screens/drug.dart';
 //import 'package:drugkit/screens/prescriptionscan_loading.dart';
-//import 'package:drugkit/screens/prescription_data.dart';
-//import 'package:drugkit/screens/nearestpharmacy.dart ';
-//import 'package:drugkit/screens/scanner.dart';
-//import 'package:drugkit/screens/chatbot.dart';
+import 'package:drugkit/screens/prescription_data.dart';
+import 'package:drugkit/screens/nearestpharmacy.dart ';
+import 'package:drugkit/screens/scanner.dart';
+import 'package:drugkit/screens/chatbot.dart';
 import 'package:drugkit/Navigation/routes_names.dart ';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -75,6 +75,23 @@ class DrugKitApp extends StatelessWidget {
         },
         RouteNames.resetDone: (context) => const SetNewPassDoneScreen(),
         RouteNames.home: (context) => const HomeScreen(),
+         RouteNames.prescriptionScan: (context) => PrescriptionResultScreen(),
+        RouteNames.nearestPharmacy: (context) => NearestPharmacyScreen(),
+        RouteNames.chatBot: (context) => ChatBotScreen(),
+        RouteNames.category: (context) => CategoryDrugsScreen(categoryName: 'Heart'), // هنعدل ده ديناميك بعدين
+        // RouteNames.drugDetails: (context) {
+        //   final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+        //   return DrugDetailsScreen(
+        //     // drugName: args['name'],
+        //     // imageUrl: args['imageUrl'],
+        //     // description: args['description'],
+        //     // company: args['company'],
+        //     // sideEffects: args['sideEffects'],
+        //     // price: args['price'],
+        //   );
+        // },
+       
+
       },
       onGenerateRoute: (settings) {
         if (settings.name == RouteNames.verifySignup) {
