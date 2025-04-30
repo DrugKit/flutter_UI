@@ -7,14 +7,7 @@ class ApiUrl {
   static const foregt = "Authentication/forget-password";
   static const verifyforget = "/Authentication/check-reset-code";
   static const newpass = "Authentication/reset-password";
-  static const getstudent = "Parent/";
-  static const addstudent = "Parent/add-student-to-parent";
-  static const editprofile = "Parent/edit-parent-name";
-  static const editphone = "Parent/edit-parent-phone";
-  static const updatepassword = "Authentication/update-password";
-  static const addchild = "Parent/AddChild";
-  static const updatechild = "Parent/UpdateChild";
-  static const addnewstudent = "Parent/add-student-to-parent";
+  static const getcategorydrugs = "Drug/GetCategoryDrugs";
 
   // ✨ New for Search
   static const searchDrugs = "Drug/AutoComplete";

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:drugkit/Navigation/routes_names.dart';
 import 'package:drugkit/logic/category/category_cubit.dart';
 import 'package:drugkit/logic/search/search_cubit.dart';
 import 'package:drugkit/models/category.dart';
@@ -249,41 +250,53 @@ class CategoryScroll extends StatelessWidget {
                     String fullImageUrl =
                         'https://drugkit.runasp.net/${category.imageUrl}'
                             .replaceAll('.svg', '.png');
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 6),
-                      width: 80,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                fullImageUrl,
-                                fit: BoxFit.cover,
-                                width: 80,
-                                height: 80,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.error),
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                },
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          RouteNames.category,
+                          arguments: {
+                            'categoryId': category.id,
+                            'name': category.name,
+                          },
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        width: 80,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  fullImageUrl,
+                                  fit: BoxFit.cover,
+                                  width: 80,
+                                  height: 80,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.error),
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            category.name,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
+                            const SizedBox(height: 4),
+                            Text(
+                              category.name,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                             ),
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -300,6 +313,7 @@ class CategoryScroll extends StatelessWidget {
     );
   }
 }
+
 
 // 🔥 FeatureIcon
 class FeatureIcon extends StatelessWidget {

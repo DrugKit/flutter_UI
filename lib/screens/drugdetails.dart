@@ -27,21 +27,27 @@ class DrugDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(child: Image.asset(drug['image']!, height: 180)),
-            SizedBox(height: 24),
-            _buildSection("Name:", drug['name']!),
-            _buildSection("Price:", "100"),
-            _buildSection(
-              "Description:",
-              "This medication is used to treat [condition or disease] by [mechanism of action]. It is recommended to use it under medical supervision and keep it out of reach of children.",
+            Center(
+              child: Image.network(
+                drug['image']!,
+                height: 180,
+                errorBuilder: (_, __, ___) =>
+                    const Icon(Icons.image, size: 100),
+              ),
             ),
-            _buildSection("Company:", "Pharma Co."),
+            SizedBox(height: 24),
+            _buildSection("Name:", drug['name'] ?? ''),
+            _buildSection("Form:", drug['form'] ?? ''),
+            _buildSection("Price:", drug['price'] ?? 'N/A'),
+            _buildSection("Company:", drug['company'] ?? ''),
+            _buildSection("Description:", drug['description'] ?? ''),
             SizedBox(height: 12),
             Text("Side Effects:-", style: _titleStyle()),
-            ...['Nausea', 'Headache', 'Dizziness', 'Dry Mouth'].map(
+            ...(drug['sideEffects']?.split(',') ?? []).map(
               (e) => Padding(
                 padding: const EdgeInsets.only(left: 12.0, top: 4),
-                child: Text("• $e", style: TextStyle(color: Colors.grey[700])),
+                child: Text("• ${e.trim()}",
+                    style: TextStyle(color: Colors.grey[700])),
               ),
             )
           ],
@@ -63,7 +69,7 @@ class DrugDetailsScreen extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.normal,
                 fontSize: 15,
-                color: Colors.grey[700], 
+                color: Colors.grey[700],
               ),
             )
           ],
@@ -72,9 +78,9 @@ class DrugDetailsScreen extends StatelessWidget {
     );
   }
 
-  TextStyle _titleStyle() => TextStyle(
+  TextStyle _titleStyle() => const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 16,
-        color: Color(0xFF0C1467), // 
+        color: Color(0xFF0C1467),
       );
 }

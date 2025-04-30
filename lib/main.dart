@@ -1,3 +1,4 @@
+import 'package:drugkit/logic/category_details/cubit/getcategory_cubit.dart';
 import 'package:drugkit/logic/forget_password/forget_password_cubit.dart';
 import 'package:drugkit/logic/login/login_cubit.dart';
 import 'package:drugkit/logic/verification/verification_cubit.dart';
@@ -36,79 +37,93 @@ class DrugKitApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false, // Hide debug banner
-      title: 'DrugKit',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      // home: CategoryDrugsScreen(categoryName: 'Heart'),  // Change this to the desired initial screen
-      //home: LoginScreen(),  // Change this to the desired initial screen
-      initialRoute: '/welcome',
-      routes: {
-        RouteNames.welcome: (context) => const WelcomeScreen(),
-        RouteNames.signup: (context) => const SignUpScreen(),
-        // RouteNames.verifySignup: (context) => const VerificationCodeScreen(),
-        RouteNames.signupDone: (context) => const SuccessScreen(),
-        RouteNames.login: (context) => BlocProvider(
-              create: (_) => LoginCubit(),
-              child: const LoginScreen(),
-            ),
-        RouteNames.forgotPassword: (context) => const ForgotPasswordScreen(),
-        RouteNames.verifyEmail: (context) {
-          final args = ModalRoute.of(context)!.settings.arguments
-              as Map<String, dynamic>;
-          return BlocProvider(
-            create: (_) => ForgetPasswordCubit(),
-            child: VerifyEmailScreen(email: args['email']),
-          );
-        },
-
-        RouteNames.passwordResetDone: (context) => const PasswordResetScreen(),
-        RouteNames.setNewPassword: (context) {
-          final args =
-              ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-          return SetNewPasswordScreen(
-            email: args['email']!,
-            resetCode: args['resetCode']!,
-          );
-        },
-        RouteNames.resetDone: (context) => const SetNewPassDoneScreen(),
-        RouteNames.home: (context) => const HomeScreen(),
-         RouteNames.prescriptionScan: (context) => PrescriptionResultScreen(),
-        RouteNames.nearestPharmacy: (context) => NearestPharmacyScreen(),
-        RouteNames.chatBot: (context) => ChatBotScreen(),
-        RouteNames.category: (context) => CategoryDrugsScreen(categoryName: 'Heart'), // هنعدل ده ديناميك بعدين
-        // RouteNames.drugDetails: (context) {
-        //   final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-        //   return DrugDetailsScreen(
-        //     // drugName: args['name'],
-        //     // imageUrl: args['imageUrl'],
-        //     // description: args['description'],
-        //     // company: args['company'],
-        //     // sideEffects: args['sideEffects'],
-        //     // price: args['price'],
-        //   );
-        // },
-       
-
-      },
-      onGenerateRoute: (settings) {
-        if (settings.name == RouteNames.verifySignup) {
-          final data = settings.arguments as Map<String, String>;
-          return MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (_) => VerificationCubit(),
-              child: VerificationCodeScreen(
-                email: data['email']!,
-                password: data['password']!,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => GetcategoryCubit()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false, // Hide debug banner
+        title: 'DrugKit',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        //home: CategoryDrugsScreen(categoryName: "home")
+        // home: CategoryDrugsScreen(categoryName: 'Heart'),  // Change this to the desired initial screen
+        //home: LoginScreen(),  // Change this to the desired initial screen
+        initialRoute: '/welcome',
+        routes: {
+          RouteNames.welcome: (context) => const WelcomeScreen(),
+          RouteNames.signup: (context) => const SignUpScreen(),
+          // RouteNames.verifySignup: (context) => const VerificationCodeScreen(),
+          RouteNames.signupDone: (context) => const SuccessScreen(),
+          RouteNames.login: (context) => BlocProvider(
+                create: (_) => LoginCubit(),
+                child: const LoginScreen(),
               ),
-            ),
-          );
-        }
-        // باقي الراوتات هنا حسب استخدامك...
-        return null;
-      },
+          RouteNames.forgotPassword: (context) => const ForgotPasswordScreen(),
+          RouteNames.verifyEmail: (context) {
+            final args = ModalRoute.of(context)!.settings.arguments
+                as Map<String, dynamic>;
+            return BlocProvider(
+              create: (_) => ForgetPasswordCubit(),
+              child: VerifyEmailScreen(email: args['email']),
+            );
+          },
+
+          RouteNames.passwordResetDone: (context) =>
+              const PasswordResetScreen(),
+          RouteNames.setNewPassword: (context) {
+            final args = ModalRoute.of(context)!.settings.arguments
+                as Map<String, String>;
+            return SetNewPasswordScreen(
+              email: args['email']!,
+              resetCode: args['resetCode']!,
+            );
+          },
+          RouteNames.resetDone: (context) => const SetNewPassDoneScreen(),
+          RouteNames.home: (context) => const HomeScreen(),
+          RouteNames.prescriptionScan: (context) => PrescriptionResultScreen(),
+          RouteNames.nearestPharmacy: (context) => NearestPharmacyScreen(),
+          RouteNames.chatBot: (context) => ChatBotScreen(),
+          // RouteNames.category: (context) => CategoryDrugsScreen(categoryName: 'Heart'), // هنعدل ده ديناميك بعدين
+          // RouteNames.drugDetails: (context) {
+          //   final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          //   return DrugDetailsScreen(
+          //     // drugName: args['name'],
+          //     // imageUrl: args['imageUrl'],
+          //     // description: args['description'],
+          //     // company: args['company'],
+          //     // sideEffects: args['sideEffects'],
+          //     // price: args['price'],
+          //   );
+          // },
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == RouteNames.verifySignup) {
+            final data = settings.arguments as Map<String, String>;
+            return MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                create: (_) => VerificationCubit(),
+                child: VerificationCodeScreen(
+                  email: data['email']!,
+                  password: data['password']!,
+                ),
+              ),
+            );
+          } else if (settings.name == RouteNames.category) {
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (context) => CategoryDrugsScreen(
+                categoryName: args['name'],
+                categoryId: args['categoryId'],
+              ),
+            );
+          }
+
+          // باقي الراوتات هنا حسب استخدامك...
+          return null;
+        },
+      ),
     );
   }
 }
