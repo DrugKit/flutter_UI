@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:drugkit/Navigation/routes_names.dart';
 import 'package:drugkit/logic/category/category_cubit.dart';
+import 'package:drugkit/logic/category_details/cubit/getcategory_cubit.dart';
 import 'package:drugkit/logic/search/search_cubit.dart';
-import 'package:drugkit/models/category.dart';
-import 'package:drugkit/models/drug.dart';
+import 'package:drugkit/logic/searchdrugname/drug_details_cubit.dart';
+import 'package:drugkit/screens/drugdetails_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,7 +15,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => SearchCubit()),
         BlocProvider(create: (_) => CategoryCubit()..getCategories()),
       ],
       child: const HomeScreenContent(),
@@ -44,9 +44,11 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
   void _onSearchChanged(BuildContext context) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (_searchController.text.isNotEmpty) {
-        SearchCubit.get(context)
-            .searchDrugByName(_searchController.text.trim());
+      final query = _searchController.text.trim();
+      if (query.isNotEmpty) {
+        SearchCubit.get(context).searchDrugByName(query);
+      } else {
+        SearchCubit.get(context).clearResults();
       }
     });
   }
@@ -77,7 +79,6 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔎 Search Bar
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
@@ -97,24 +98,18 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // 🔎 Search Results
               BlocBuilder<SearchCubit, SearchState>(
                 builder: (context, state) {
                   if (state is SearchSuccess) {
                     if (state.drugs.isEmpty) {
-                      // لما مفيش أدوية
                       return ListView(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         children: const [
-                          ListTile(
-                            title: Text("No drug found"),
-                          ),
+                          ListTile(title: Text("No drug found")),
                         ],
                       );
                     } else {
-                      // فيه أدوية
                       return ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -123,6 +118,18 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                           final drug = state.drugs[index];
                           return ListTile(
                             title: Text(drug.name),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider(
+                                    create: (_) => DrugDetailsCubit()
+                                      ..getDrugDetails(drug.name),
+                                    child: DrugDetailsLoaderScreen(),
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         },
                       );
@@ -130,20 +137,13 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                   } else if (state is SearchError) {
                     return Center(child: Text(state.errorMessage));
                   } else {
-                    // لا تعرض أي شيء أثناء الـ loading أو البداية
                     return const SizedBox.shrink();
                   }
                 },
               ),
-
               const SizedBox(height: 20),
-
-              // 📋 Categories
               const CategoryScroll(),
-
               const SizedBox(height: 20),
-
-              // ⭐ Features
               const Text(
                 "Features",
                 style: TextStyle(
@@ -153,7 +153,6 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 ),
               ),
               const SizedBox(height: 10),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: const [
@@ -313,7 +312,6 @@ class CategoryScroll extends StatelessWidget {
     );
   }
 }
-
 
 // 🔥 FeatureIcon
 class FeatureIcon extends StatelessWidget {

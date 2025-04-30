@@ -1,6 +1,7 @@
 import 'package:drugkit/logic/category_details/cubit/getcategory_cubit.dart';
 import 'package:drugkit/logic/forget_password/forget_password_cubit.dart';
 import 'package:drugkit/logic/login/login_cubit.dart';
+import 'package:drugkit/logic/search/search_cubit.dart';
 import 'package:drugkit/logic/verification/verification_cubit.dart';
 import 'package:drugkit/network/api_service.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +38,8 @@ class DrugKitApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => GetcategoryCubit()),
-      ],
+    return BlocProvider(
+      create: (context) => SearchCubit(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false, // Hide debug banner
         title: 'DrugKit',
@@ -69,7 +68,6 @@ class DrugKitApp extends StatelessWidget {
               child: VerifyEmailScreen(email: args['email']),
             );
           },
-
           RouteNames.passwordResetDone: (context) =>
               const PasswordResetScreen(),
           RouteNames.setNewPassword: (context) {
@@ -85,6 +83,11 @@ class DrugKitApp extends StatelessWidget {
           RouteNames.prescriptionScan: (context) => PrescriptionResultScreen(),
           RouteNames.nearestPharmacy: (context) => NearestPharmacyScreen(),
           RouteNames.chatBot: (context) => ChatBotScreen(),
+          RouteNames.drugDetails: (context) {
+            final drug = ModalRoute.of(context)!.settings.arguments
+                as Map<String, String>;
+            return DrugDetailsScreen(drug: drug);
+          }
           // RouteNames.category: (context) => CategoryDrugsScreen(categoryName: 'Heart'), // هنعدل ده ديناميك بعدين
           // RouteNames.drugDetails: (context) {
           //   final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -113,9 +116,12 @@ class DrugKitApp extends StatelessWidget {
           } else if (settings.name == RouteNames.category) {
             final args = settings.arguments as Map<String, dynamic>;
             return MaterialPageRoute(
-              builder: (context) => CategoryDrugsScreen(
-                categoryName: args['name'],
-                categoryId: args['categoryId'],
+              builder: (context) => BlocProvider(
+                create: (context) => GetcategoryCubit(),
+                child: CategoryDrugsScreen(
+                  categoryName: args['name'],
+                  categoryId: args['categoryId'],
+                ),
               ),
             );
           }

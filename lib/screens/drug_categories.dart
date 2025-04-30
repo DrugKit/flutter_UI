@@ -1,4 +1,9 @@
+import 'dart:async';
+
 import 'package:drugkit/logic/category_details/cubit/getcategory_cubit.dart';
+import 'package:drugkit/logic/search/search_cubit.dart';
+import 'package:drugkit/logic/searchdrugname/drug_details_cubit.dart';
+import 'package:drugkit/screens/drugdetails_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:drugkit/screens/drugdetails.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,6 +46,29 @@ class _CategoryDrugsScreenState extends State<CategoryDrugsScreen> {
         );
   }
 
+  final Color primaryColor = const Color(0xFF0C1467);
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(BuildContext context) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      final query = _searchController.text.trim();
+      if (query.isNotEmpty) {
+        SearchCubit.get(context).searchDrugByName(query);
+      } else {
+        SearchCubit.get(context).clearResults();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,9 +79,72 @@ class _CategoryDrugsScreenState extends State<CategoryDrugsScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            const SizedBox(height: 16),
-            _buildSearchBar(),
-            const SizedBox(height: 16),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TextField(
+                controller: _searchController,
+                onChanged: (_) => _onSearchChanged(context),
+                decoration: const InputDecoration(
+                  hintText: "Search",
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: InputBorder.none,
+                  icon: Icon(Icons.search, color: Colors.white),
+                ),
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: 20),
+            BlocBuilder<SearchCubit, SearchState>(
+              builder: (context, state) {
+                if (state is SearchSuccess) {
+                  if (state.drugs.isEmpty) {
+                    return ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: const [
+                        ListTile(title: Text("No drug found")),
+                      ],
+                    );
+                  } else {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.drugs.length,
+                      itemBuilder: (context, index) {
+                        final drug = state.drugs[index];
+                        return ListTile(
+                          title: Text(drug.name),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider(
+                                  create: (_) => DrugDetailsCubit()
+                                    ..getDrugDetails(drug.name),
+                                  child: DrugDetailsLoaderScreen(),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  }
+                } else if (state is SearchError) {
+                  return Center(child: Text(state.errorMessage));
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
+            // const SizedBox(height: 16),
             Center(
               child: Text(widget.categoryName,
                   style: const TextStyle(

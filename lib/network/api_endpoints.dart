@@ -11,4 +11,6 @@ class ApiUrl {
 
   // ✨ New for Search
   static const searchDrugs = "Drug/AutoComplete";
+  static const drugDetailsByName = "Drug/GetDrugsDetailsByName";
+
 }

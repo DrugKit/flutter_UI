@@ -36,12 +36,16 @@ class SearchCubit extends Cubit<SearchState> {
         drugs = drugs.take(5).toList(); // نجيب أول 5 فقط
         emit(SearchSuccess(drugs));
       } else {
-        // لو السيرفر رجع error code هنعتبر انه مفيش أدوية
         emit(SearchSuccess([]));
       }
     } catch (e) {
-      // ❗❗ لو حصل error مثلا 404 نرجع search success بقائمة فاضية مش error
       emit(SearchSuccess([]));
     }
+  }
+
+  // 🧹 Clear results method
+  void clearResults() {
+    drugs.clear();
+    emit(SearchInitial()); // ⬅️ كده هنعرف إنها الحالة المبدئية
   }
 }
