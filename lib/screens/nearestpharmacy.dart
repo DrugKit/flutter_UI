@@ -6,10 +6,10 @@ class NearestPharmacyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pharmacies = [
-      {'name': 'El shefaa', 'distance': '500m Away'},
-      {'name': 'El Ezaby', 'distance': '400m Away'},
-      {'name': 'El Hayah', 'distance': '600m Away'},
-      {'name': 'Dr Doaa', 'distance': '500m Away'},
+      {'name': 'El shefaa', 'distance': '500m Away', 'phone': '01234567879'},
+      {'name': 'El Ezaby', 'distance': '400m Away', 'phone': '01234567879'},
+      {'name': 'El Hayah', 'distance': '600m Away', 'phone': '01234567879'},
+      {'name': 'Dr Doaa', 'distance': '500m Away', 'phone': '01234567879'},
     ];
 
     return Scaffold(
@@ -19,7 +19,7 @@ class NearestPharmacyScreen extends StatelessWidget {
         elevation: 0,
         foregroundColor: Colors.black,
         leading: BackButton(),
-        title: Text(
+        title: const Text(
           'Nearest Pharmacy',
           style: TextStyle(
             color: Color(0xFF0C1467),
@@ -31,30 +31,29 @@ class NearestPharmacyScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Current location button
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: Color(0xFF0C1467),
+                color: const Color(0xFF0C1467),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Your current location....",
                     style: TextStyle(color: Colors.white),
                   ),
-                  Image.asset('assets/locationIcon.png', color: Colors.white, height: 24, width: 24),
+                  Image.asset('assets/locationIcon.png',
+                      color: Colors.white, height: 24, width: 24),
                 ],
               ),
             ),
-            SizedBox(height: 20),
-            // Grid of pharmacies
+            const SizedBox(height: 20),
             Expanded(
               child: GridView.builder(
                 itemCount: pharmacies.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
@@ -64,32 +63,38 @@ class NearestPharmacyScreen extends StatelessWidget {
                   final pharmacy = pharmacies[index];
                   return Container(
                     decoration: BoxDecoration(
-                      color: Color(0xFFF6F6F6),
+                      color: const Color(0xFFF6F6F6),
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Image.asset(
-                            'assets/location.png', // replace with actual map or static image
+                            'assets/location.png',
                             fit: BoxFit.cover,
                             width: double.infinity,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(
                           pharmacy['name']!,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xFF0C1467),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Text(
                           pharmacy['distance']!,
                           style: TextStyle(color: Colors.grey[700]),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Phone: ${pharmacy['phone']}',
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
                       ],
                     ),
                   );
