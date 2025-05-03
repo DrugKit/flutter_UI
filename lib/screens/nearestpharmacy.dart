@@ -1,24 +1,93 @@
+import 'package:drugkit/logic/nearest_pharmacy/nearest_pharmacy_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class NearestPharmacyScreen extends StatelessWidget {
+class NearestPharmacyScreen extends StatefulWidget {
   const NearestPharmacyScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final pharmacies = [
-      {'name': 'El shefaa', 'distance': '500m Away', 'phone': '01234567879'},
-      {'name': 'El Ezaby', 'distance': '400m Away', 'phone': '01234567879'},
-      {'name': 'El Hayah', 'distance': '600m Away', 'phone': '01234567879'},
-      {'name': 'Dr Doaa', 'distance': '500m Away', 'phone': '01234567879'},
-    ];
+  State<NearestPharmacyScreen> createState() => _NearestPharmacyScreenState();
+}
 
+class _NearestPharmacyScreenState extends State<NearestPharmacyScreen> {
+  double? lat;
+  double? lon;
+  bool isFetchingLocation = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _determinePositionAndFetch();
+  }
+
+  Future<void> _determinePositionAndFetch() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        _showLocationError("Location services are disabled.");
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        permission = await Geolocator.requestPermission();
+        if (permission != LocationPermission.whileInUse &&
+            permission != LocationPermission.always) {
+          _showLocationError("Location permission denied.");
+          return;
+        }
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      setState(() {
+        lat = position.latitude;
+        lon = position.longitude;
+        isFetchingLocation = false;
+      });
+
+      if (lat != null && lon != null) {
+        context.read<NearestPharmacyCubit>().fetchNearestPharmacies(lat!, lon!);
+      }
+    } catch (e) {
+      _showLocationError("Failed to get location: $e");
+    }
+  }
+
+  void _showLocationError(String message) {
+    setState(() {
+      isFetchingLocation = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  void _openMap(double latitude, double longitude) async {
+    final url = Uri.parse(
+        "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Could not open map")),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: Colors.black,
-        leading: BackButton(),
+        leading: const BackButton(),
         title: const Text(
           'Nearest Pharmacy',
           style: TextStyle(
@@ -40,64 +109,84 @@ class NearestPharmacyScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "Your current location....",
-                    style: TextStyle(color: Colors.white),
+                  Text(
+                    lat != null
+                        ? "Lat: ${lat!.toStringAsFixed(5)}, Lon: ${lon!.toStringAsFixed(5)}"
+                        : (isFetchingLocation
+                            ? "Fetching location..."
+                            : "Location unavailable"),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  Image.asset('assets/locationIcon.png',
-                      color: Colors.white, height: 24, width: 24),
+                  const Icon(Icons.location_on, color: Colors.white),
                 ],
               ),
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: GridView.builder(
-                itemCount: pharmacies.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.85,
-                ),
-                itemBuilder: (context, index) {
-                  final pharmacy = pharmacies[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF6F6F6),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Image.asset(
-                            'assets/location.png',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
+              child: BlocBuilder<NearestPharmacyCubit, NearestPharmacyState>(
+                builder: (context, state) {
+                  if (state is NearestPharmacyLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is NearestPharmacySuccess) {
+                    return GridView.builder(
+                      itemCount: state.pharmacies.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 0.85,
+                      ),
+                      itemBuilder: (context, index) {
+                        final pharmacy = state.pharmacies[index];
+                        return GestureDetector(
+                          onTap: () =>
+                              _openMap(pharmacy.latitude, pharmacy.longitude),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF6F6F6),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Image.asset(
+                                    'assets/location.png',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  pharmacy.name,
+                                  style: const TextStyle(
+                                    color: Color(0xFF0C1467),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${pharmacy.distance.toStringAsFixed(1)} meters away',
+                                  style: TextStyle(color: Colors.grey[700]),
+                                ),
+                                if (pharmacy.phoneNumber != null)
+                                  Text(
+                                    'Phone: ${pharmacy.phoneNumber}',
+                                    style: TextStyle(color: Colors.grey[700]),
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          pharmacy['name']!,
-                          style: const TextStyle(
-                            color: Color(0xFF0C1467),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          pharmacy['distance']!,
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Phone: ${pharmacy['phone']}',
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                      ],
-                    ),
-                  );
+                        );
+                      },
+                    );
+                  } else if (state is NearestPharmacyError) {
+                    return Center(child: Text(state.message));
+                  } else {
+                    return const Center(child: Text("No data yet."));
+                  }
                 },
               ),
             ),

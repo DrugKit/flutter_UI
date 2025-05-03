@@ -16,6 +16,7 @@ class HomeScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => CategoryCubit()..getCategories()),
+        BlocProvider(create: (_) => SearchCubit()),
       ],
       child: const HomeScreenContent(),
     );
@@ -33,6 +34,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
   final Color primaryColor = const Color(0xFF0C1467);
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
+  int _currentIndex = 0;
 
   @override
   void dispose() {
@@ -106,7 +108,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         children: const [
-                          ListTile(title: Text("No drug found")),
+                          ListTile(title: Text("No drug found"))
                         ],
                       );
                     } else {
@@ -194,6 +196,16 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          if (index == 1) {
+            Navigator.pushNamed(context, RouteNames.nearestPharmacy);
+          }
+        },
         backgroundColor: primaryColor,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
@@ -201,14 +213,18 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home, size: 35), label: ""),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/scanner.png'), size: 35),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/interaction checker.png'),
+              icon: ImageIcon(AssetImage('assets/nearestpharmacyIcon.png'),
                   size: 35),
               label: ""),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/chatbot.png'), size: 35),
+              icon: ImageIcon(AssetImage('assets/drugRecommendationIcon.png'),
+                  size: 35),
+              label: ""),
+          BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage('assets/interaction.png'), size: 35),
+              label: ""),
+          BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage('assets/chatbotIcon.png'), size: 35),
               label: ""),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:drugkit/logic/category_details/cubit/getcategory_cubit.dart';
 import 'package:drugkit/logic/forget_password/forget_password_cubit.dart';
 import 'package:drugkit/logic/login/login_cubit.dart';
+import 'package:drugkit/logic/nearest_pharmacy/nearest_pharmacy_cubit.dart';
 import 'package:drugkit/logic/search/search_cubit.dart';
 import 'package:drugkit/logic/verification/verification_cubit.dart';
 import 'package:drugkit/network/api_service.dart';
@@ -80,8 +81,12 @@ class DrugKitApp extends StatelessWidget {
           },
           RouteNames.resetDone: (context) => const SetNewPassDoneScreen(),
           RouteNames.home: (context) => const HomeScreen(),
+          RouteNames.nearestPharmacy: (context) => BlocProvider(
+                create: (_) => NearestPharmacyCubit(),
+                child: const NearestPharmacyScreen(),
+              ),
+
           RouteNames.prescriptionScan: (context) => PrescriptionResultScreen(),
-          RouteNames.nearestPharmacy: (context) => NearestPharmacyScreen(),
           RouteNames.chatBot: (context) => ChatBotScreen(),
           RouteNames.drugDetails: (context) {
             final drug = ModalRoute.of(context)!.settings.arguments
