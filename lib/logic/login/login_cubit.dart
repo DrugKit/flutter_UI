@@ -16,46 +16,47 @@ class LoginCubit extends Cubit<LoginState> {
   final DioHelper _dioHelper = DioHelper();
 
   Future<void> login({
-  required String email,
-  required String password,
-}) async {
-  emit(LoginLoading());
-  print('Starting login...');
+    required String email,
+    required String password,
+  }) async {
+    emit(LoginLoading());
+    print('Starting login...');
 
-  try {
-    final response = await _dioHelper.postData(
-      path: ApiUrl.login,
-      body: {
-        "email": email,
-        "password": password,
-      },
-    );
-    print('Login Response: ${response.data}');
+    try {
+      final response = await _dioHelper.postData(
+        path: ApiUrl.login,
+        body: {
+          "email": email,
+          "password": password,
+        },
+      );
+      print('Login Response: ${response.data}');
 
-    if (response.statusCode == 200) {
-      final token = response.data["token"];
-      if (token != null) {
-        await StorageData.storeStorage(key: StorageData.token, value: token);
-      }
-      emit(LoginSuccess());
-    } else {
-      emit(LoginError("Login failed. Please check your credentials."));
-    }
-  } catch (e) {
-    print('Login Error: $e');
-    if (e is DioException) {
-      if (e.response?.statusCode == 400 &&
-          e.response?.data.toString().contains("Email not confirmed") == true) {
-        emit(LoginNeedsVerification(email: email, password: password));
+      if (response.statusCode == 200) {
+        final token = response.data["token"];
+        if (token != null) {
+          await StorageData.storeStorage(key: StorageData.token, value: token);
+          DioHelper().updateToken(); // ⬅️ ده اللي ناقص
+        }
+        emit(LoginSuccess());
       } else {
-        emit(LoginError(_handleError(e)));
+        emit(LoginError("Login failed. Please check your credentials."));
       }
-    } else {
-      emit(LoginError("Unexpected error: ${e.toString()}"));
+    } catch (e) {
+      print('Login Error: $e');
+      if (e is DioException) {
+        if (e.response?.statusCode == 400 &&
+            e.response?.data.toString().contains("Email not confirmed") ==
+                true) {
+          emit(LoginNeedsVerification(email: email, password: password));
+        } else {
+          emit(LoginError(_handleError(e)));
+        }
+      } else {
+        emit(LoginError("Unexpected error: ${e.toString()}"));
+      }
     }
   }
-}
-
 
   String _handleError(dynamic e) {
     if (e is DioException) {

@@ -15,5 +15,11 @@ class RouteNames {
   static const String prescriptionScan = '/prescriptionScan';
   static const String nearestPharmacy = '/nearestPharmacy';
   static const String chatBot = '/chatBot';
+  static const String drugRecommendation = '/drug_recommendation';
+  static const String myRequests = '/myRequests';
+  static const String prescriptionDetails = '/view-prescription';
+  static const String myPrescriptions = '/my-prescriptions';
+  static const String drugDetailsNoImage = '/drugDetailsNoImage';
+
 // static const String interactionChecker = '/interaction_checker'; // بعدين
 }

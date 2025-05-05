@@ -92,6 +92,8 @@ flutter:
     - assets/interaction.png
     - assets/chatbotIcon.png
     - assets/location.png
+    - assets/search_med.png
+    - assets/calendar.png
 
   #   - images/a_dot_ham.jpeg
 

@@ -2,9 +2,17 @@ import 'package:drugkit/logic/category_details/cubit/getcategory_cubit.dart';
 import 'package:drugkit/logic/forget_password/forget_password_cubit.dart';
 import 'package:drugkit/logic/login/login_cubit.dart';
 import 'package:drugkit/logic/nearest_pharmacy/nearest_pharmacy_cubit.dart';
+import 'package:drugkit/logic/prescription_history/prescription_history_cubit.dart';
 import 'package:drugkit/logic/search/search_cubit.dart';
 import 'package:drugkit/logic/verification/verification_cubit.dart';
+import 'package:drugkit/models/prescription_history_model.dart';
 import 'package:drugkit/network/api_service.dart';
+import 'package:drugkit/screens/chatbot_requests.dart';
+import 'package:drugkit/screens/drug_details_no_image.dart';
+import 'package:drugkit/screens/drug_recommend.dart';
+import 'package:drugkit/screens/prescription_history.dart';
+import 'package:drugkit/screens/view_prescription.dart';
+import 'package:drugkit/storage/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:drugkit/screens/welcome.dart';
 import 'package:drugkit/screens/signup.dart';
@@ -27,10 +35,15 @@ import 'package:drugkit/screens/scanner.dart';
 import 'package:drugkit/screens/chatbot.dart';
 import 'package:drugkit/Navigation/routes_names.dart ';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter(); // ⬅️ مهم جدًا لتهيئة Hive في التطبيقات Flutter
+  await StorageData.init();
+  // ⬅️ لازم ده الأول
   await DioHelper.init();
+  DioHelper().updateToken(); // ⬅️ بعد init
   runApp(const DrugKitApp());
 }
 
@@ -81,18 +94,31 @@ class DrugKitApp extends StatelessWidget {
           },
           RouteNames.resetDone: (context) => const SetNewPassDoneScreen(),
           RouteNames.home: (context) => const HomeScreen(),
+          RouteNames.myRequests: (context) => const ChatbotRequestsScreen(),
+          RouteNames.myPrescriptions: (context) => BlocProvider(
+                create: (_) =>
+                    PrescriptionHistoryCubit()..fetchPrescriptionHistory(),
+                child: const PrescriptionHistoryScreen(),
+              ),
+
           RouteNames.nearestPharmacy: (context) => BlocProvider(
                 create: (_) => NearestPharmacyCubit(),
                 child: const NearestPharmacyScreen(),
               ),
-
+          RouteNames.drugRecommendation: (context) =>
+              const DrugRecommendationScreen(),
           RouteNames.prescriptionScan: (context) => PrescriptionResultScreen(),
           RouteNames.chatBot: (context) => ChatBotScreen(),
           RouteNames.drugDetails: (context) {
             final drug = ModalRoute.of(context)!.settings.arguments
                 as Map<String, String>;
             return DrugDetailsScreen(drug: drug);
-          }
+          },
+          RouteNames.drugDetailsNoImage: (context) {
+  final drug = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+  return DrugDetailsNoImageScreen(drug: drug);
+          },
+
           // RouteNames.category: (context) => CategoryDrugsScreen(categoryName: 'Heart'), // هنعدل ده ديناميك بعدين
           // RouteNames.drugDetails: (context) {
           //   final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -128,6 +154,12 @@ class DrugKitApp extends StatelessWidget {
                   categoryId: args['categoryId'],
                 ),
               ),
+            );
+          } else if (settings.name == RouteNames.prescriptionDetails) {
+            final prescription = settings.arguments as PrescriptionHistoryModel;
+            return MaterialPageRoute(
+              builder: (_) =>
+                  PrescriptionDetailsScreen(prescription: prescription),
             );
           }
 

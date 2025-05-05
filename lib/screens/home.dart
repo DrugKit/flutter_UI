@@ -58,13 +58,52 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            const DrawerHeader(
+              child: Icon(Icons.account_circle,
+                  size: 60, color: Color(0xFF0C1467)),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person, color: Color(0xFF0C1467)),
+              title: const Text("Profile"),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.history, color: Color(0xFF0C1467)),
+              title: const Text("History"),
+              onTap: () {
+                Navigator.pushNamed(context, RouteNames.myPrescriptions);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.assignment, color: Color(0xFF0C1467)),
+              title: const Text("Requests"),
+              onTap: () {
+                Navigator.pushNamed(context, RouteNames.myRequests);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Color(0xFF0C1467)),
+              title: const Text("Log out"),
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black),
-          onPressed: () {},
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.black),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
         ),
         title: Image.asset('assets/pilllogo.png', height: 30),
         actions: [
@@ -202,8 +241,14 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             _currentIndex = index;
           });
 
-          if (index == 1) {
-            Navigator.pushNamed(context, RouteNames.nearestPharmacy);
+          switch (index) {
+            case 1:
+              Navigator.pushNamed(context, RouteNames.nearestPharmacy);
+              break;
+            case 2:
+              Navigator.pushNamed(context, RouteNames.drugRecommendation);
+              break;
+            // Add more cases later if needed
           }
         },
         backgroundColor: primaryColor,
