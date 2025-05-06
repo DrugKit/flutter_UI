@@ -34,13 +34,27 @@ class LoginCubit extends Cubit<LoginState> {
 
       if (response.statusCode == 200) {
         final token = response.data["token"];
-        if (token != null) {
-          await StorageData.storeStorage(key: StorageData.token, value: token);
-          DioHelper().updateToken(); // ⬅️ ده اللي ناقص
+        final user = response.data["user"];
+
+        if (response.statusCode == 200) {
+          final token = response.data["token"];
+          if (token != null) {
+            await StorageData.storeStorage(
+                key: StorageData.token, value: token);
+            await StorageData.storeStorage(
+                key: 'name', value: response.data["name"] ?? '');
+            await StorageData.storeStorage(
+                key: 'email', value: response.data["email"] ?? '');
+            await StorageData.storeStorage(
+                key: 'phone', value: response.data["phone"] ?? '');
+
+            DioHelper().updateToken();
+          }
+
+          emit(LoginSuccess());
         }
+
         emit(LoginSuccess());
-      } else {
-        emit(LoginError("Login failed. Please check your credentials."));
       }
     } catch (e) {
       print('Login Error: $e');

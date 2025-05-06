@@ -5,6 +5,8 @@ import 'package:drugkit/logic/category_details/cubit/getcategory_cubit.dart';
 import 'package:drugkit/logic/search/search_cubit.dart';
 import 'package:drugkit/logic/searchdrugname/drug_details_cubit.dart';
 import 'package:drugkit/screens/drugdetails_loader.dart';
+import 'package:drugkit/screens/user_profile.dart';
+import 'package:drugkit/storage/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -69,7 +71,12 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             ListTile(
               leading: const Icon(Icons.person, color: Color(0xFF0C1467)),
               title: const Text("Profile"),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.history, color: Color(0xFF0C1467)),
@@ -88,7 +95,11 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             ListTile(
               leading: const Icon(Icons.logout, color: Color(0xFF0C1467)),
               title: const Text("Log out"),
-              onTap: () {},
+              onTap: () async {
+                await StorageData.clearStorage(); // يمسح التوكن والبيانات
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RouteNames.login, (route) => false);
+              },
             ),
           ],
         ),

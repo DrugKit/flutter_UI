@@ -94,7 +94,7 @@ flutter:
     - assets/location.png
     - assets/search_med.png
     - assets/calendar.png
-
+    - assets/profile.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
