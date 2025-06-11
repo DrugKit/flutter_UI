@@ -4,12 +4,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // Update AGP to 8.3.0 or higher
-        classpath 'com.android.tools.build:gradle:8.3.0'  // هذا السطر يجب تغييره
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22"
+        classpath 'com.android.tools.build:gradle:8.2.1'
     }
 }
-
 
 allprojects {
     repositories {

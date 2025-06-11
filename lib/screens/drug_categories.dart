@@ -179,18 +179,11 @@ class _CategoryDrugsScreenState extends State<CategoryDrugsScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => DrugDetailsScreen(drug: {
-                                  'name': drug.name ?? '',
-                                  'form': drug.dosageForm ?? '',
-                                  'image':
-                                      'https://drugkit.runasp.net/${drug.imageUrl}',
-                                  'description': drug.description ??
-                                      'No description provided.',
-                                  'company': drug.company ?? 'Unknown',
-                                  'price': drug.price?.toString() ?? 'N/A',
-                                  'sideEffects':
-                                      (drug.sideEffects ?? []).join(', '),
-                                }),
+                                builder: (_) => BlocProvider(
+                                  create: (_) => DrugDetailsCubit()
+                                    ..getDrugDetails(drug.name ?? ''),
+                                  child: DrugDetailsLoaderScreen(),
+                                ),
                               ),
                             );
                           },

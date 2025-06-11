@@ -2,7 +2,7 @@ import 'package:drugkit/logic/nearest_pharmacy/nearest_pharmacy_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class NearestPharmacyScreen extends StatefulWidget {
   const NearestPharmacyScreen({super.key});
@@ -67,17 +67,19 @@ class _NearestPharmacyScreenState extends State<NearestPharmacyScreen> {
     );
   }
 
-  void _openMap(double latitude, double longitude) async {
-    final url = Uri.parse(
-        "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude");
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Could not open map")),
-      );
-    }
+
+void _openMap(double latitude, double longitude) async {
+  final url = "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
+
+  final success = await launchUrlString(url, mode: LaunchMode.externalApplication);
+  
+  if (!success) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Could not open Google Maps")),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

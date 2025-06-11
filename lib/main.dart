@@ -1,4 +1,5 @@
 import 'package:drugkit/logic/category_details/cubit/getcategory_cubit.dart';
+import 'package:drugkit/logic/chatbot/chat_cubit.dart';
 import 'package:drugkit/logic/forget_password/forget_password_cubit.dart';
 import 'package:drugkit/logic/login/login_cubit.dart';
 import 'package:drugkit/logic/nearest_pharmacy/nearest_pharmacy_cubit.dart';
@@ -108,7 +109,10 @@ class DrugKitApp extends StatelessWidget {
           RouteNames.drugRecommendation: (context) =>
               const DrugRecommendationScreen(),
           RouteNames.prescriptionScan: (context) => PrescriptionResultScreen(),
-          RouteNames.chatBot: (context) => ChatBotScreen(),
+          RouteNames.chatBot: (context) => BlocProvider(
+                create: (context) => ChatCubit(), // Provide the ChatCubit here
+                child: SymptomCheckerScreen(),
+              ),
           RouteNames.drugDetails: (context) {
             final drug = ModalRoute.of(context)!.settings.arguments
                 as Map<String, String>;

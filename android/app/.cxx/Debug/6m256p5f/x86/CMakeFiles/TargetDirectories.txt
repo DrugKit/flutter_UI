@@ -1,2 +1,0 @@
-C:/flutter project/drugkit/android/app/.cxx/Debug/6m256p5f/x86/CMakeFiles/edit_cache.dir
-C:/flutter project/drugkit/android/app/.cxx/Debug/6m256p5f/x86/CMakeFiles/rebuild_cache.dir

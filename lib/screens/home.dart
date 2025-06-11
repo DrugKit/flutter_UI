@@ -259,6 +259,9 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             case 2:
               Navigator.pushNamed(context, RouteNames.drugRecommendation);
               break;
+            case 4:
+              Navigator.pushNamed(context, RouteNames.chatBot);
+              break;
             // Add more cases later if needed
           }
         },
