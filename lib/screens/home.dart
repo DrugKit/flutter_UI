@@ -33,7 +33,7 @@ class HomeScreenContent extends StatefulWidget {
 }
 
 class _HomeScreenContentState extends State<HomeScreenContent> {
-  final Color primaryColor = const Color(0xFF0C1467);
+  //final Color primaryColor = const Color(0xFF0C1467);
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
   int _currentIndex = 0;
@@ -105,26 +105,44 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
         ),
       ),
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.black),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
+appBar: PreferredSize(
+  preferredSize: Size.fromHeight(60),
+  child: AppBar(
+    backgroundColor: Colors.white,
+    elevation: 0,
+    automaticallyImplyLeading: false,
+    flexibleSpace: SafeArea(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          children: [
+            // القائمة الجانبية على الشمال
+            IconButton(
+              icon: Icon(Icons.menu, color: Colors.black),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
+
+            SizedBox(width: 4),
+            Padding(
+  padding: EdgeInsets.only(left: 2),
+  child: Image.asset('assets/pilllogo.png', height: 30),
+),
+           
+
+            Spacer(),
+
+            // أيقونة البروفايل أو غيره في اليمين
+            //Icon(Icons.person, color: Colors.black),
+          ],
         ),
-        title: Image.asset('assets/pilllogo.png', height: 30),
-        actions: [
-          IconButton(
-            icon:
-                const Icon(Icons.notifications_none, color: Color(0xFF0C1467)),
-            onPressed: () {},
-          ),
-        ],
       ),
+    ),
+  ),
+),
+
+
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
@@ -132,9 +150,10 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
+                height: 44,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: primaryColor,
+                  color:Color(0xEDF1F5FF),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextField(
@@ -142,14 +161,14 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                   onChanged: (_) => _onSearchChanged(context),
                   decoration: const InputDecoration(
                     hintText: "Search",
-                    hintStyle: TextStyle(color: Colors.white),
+                    hintStyle: TextStyle(color: Color(0xFF0C1467)),
                     border: InputBorder.none,
-                    icon: Icon(Icons.search, color: Colors.white),
+                    icon: Icon(Icons.search, color: Color(0xFF0C1467)),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Color(0xFF0C1467)),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 5),
               BlocBuilder<SearchCubit, SearchState>(
                 builder: (context, state) {
                   if (state is SearchSuccess) {
@@ -204,42 +223,68 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                   color: Color(0xFF0C1467),
                 ),
               ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  FeatureIcon(
-                    image: 'assets/sypmptomchecker.png',
-                    label: "Symptoms Diagnoses",
-                    description:
-                        "Describe your symptoms\nand get AI-powered\ndrug suggestions.",
-                  ),
-                  FeatureIcon(
-                    image: 'assets/pointer.png',
-                    label: "Nearest Pharmacy",
-                    description:
-                        "Find pharmacies near\nyou with available\nstock.",
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  FeatureIcon(
-                    image: 'assets/medicines_4278884.png',
-                    label: "Interaction Checker",
-                    description:
-                        "Check if your medications\nare safe to take\ntogether.",
-                  ),
-                  FeatureIcon(
-                    image: 'assets/document-scanner_11857562.png',
-                    label: "Prescription Scan",
-                    description:
-                        "Upload a prescription image\nand get instant drug\nidentification.",
-                  ),
-                ],
-              ),
+              const SizedBox(height: 15),
+            SizedBox(
+  height: 210, // ارتفاع كافي لعرض الكروت
+  child: SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Row(
+      children: const [
+        SizedBox(width: 16), // بداية فراغ علشان مايبقاش لازق في الحافة
+
+        FeatureIcon(
+          image: 'assets/sypmptomchecker.png',
+          label: "Symptoms Diagnoses",
+          description:
+              "Describe your symptoms\nand get AI-powered\ndrug suggestions.",
+        ),
+        SizedBox(width: 12),
+
+        FeatureIcon(
+          image: 'assets/pointer.png',
+          label: "Nearest Pharmacy",
+          description:
+              "Find pharmacies near\nyou with available\nstock.",
+        ),
+        SizedBox(width: 12),
+
+        FeatureIcon(
+          image: 'assets/barcode_9113724.png',
+          label: "Barcode Scanner",
+          description:
+              "Scan a drug’s barcode\nto view full details,\nusage, and safety\ninformation.",
+        ),
+        SizedBox(width: 12),
+
+        FeatureIcon(
+          image: 'assets/document-scanner_11857562.png',
+          label: "Prescription Reader",
+          description:
+              "Upload a prescription and\nAI will identify the drugs\nlisted inside.",
+        ),
+        SizedBox(width: 12),
+
+        FeatureIcon(
+          image: 'assets/body-analysis.png',
+          label: "Body Check",
+          description:
+              "Upload your body result\nand get personalized\ninsights.",
+        ),
+        SizedBox(width: 12),
+
+        FeatureIcon(
+          image: 'assets/alt_drug.png',
+          label: "Drug Recommendation",
+          description:
+              "Find safe and effective\nalternatives for any drug.",
+        ),
+
+        SizedBox(width: 16), // نهاية فراغ
+      ],
+    ),
+  ),
+),
+
               const SizedBox(height: 30),
             ],
           ),
@@ -265,14 +310,14 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             // Add more cases later if needed
           }
         },
-        backgroundColor: primaryColor,
+        backgroundColor:Color(0xFF0C1467),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home, size: 35), label: ""),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/nearestpharmacyIcon.png'),
+              icon: ImageIcon(AssetImage('assets/nearestPharmacy.png'),
                   size: 35),
               label: ""),
           BottomNavigationBarItem(
@@ -280,7 +325,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                   size: 35),
               label: ""),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/interaction.png'), size: 35),
+              icon: ImageIcon(AssetImage('assets/barcodeicon.png'), size: 35),
               label: ""),
           BottomNavigationBarItem(
               icon: ImageIcon(AssetImage('assets/chatbotIcon.png'), size: 35),
