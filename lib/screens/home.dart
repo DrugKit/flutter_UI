@@ -105,44 +105,41 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
         ),
       ),
       backgroundColor: Colors.white,
-appBar: PreferredSize(
-  preferredSize: Size.fromHeight(60),
-  child: AppBar(
-    backgroundColor: Colors.white,
-    elevation: 0,
-    automaticallyImplyLeading: false,
-    flexibleSpace: SafeArea(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          children: [
-            // القائمة الجانبية على الشمال
-            IconButton(
-              icon: Icon(Icons.menu, color: Colors.black),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60),
+        child: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  // القائمة الجانبية على الشمال
+                  IconButton(
+                    icon: Icon(Icons.menu, color: Colors.black),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  ),
+
+                  SizedBox(width: 4),
+                  Padding(
+                    padding: EdgeInsets.only(left: 2),
+                    child: Image.asset('assets/pilllogo.png', height: 30),
+                  ),
+
+                  Spacer(),
+
+                  // أيقونة البروفايل أو غيره في اليمين
+                  //Icon(Icons.person, color: Colors.black),
+                ],
+              ),
             ),
-
-            SizedBox(width: 4),
-            Padding(
-  padding: EdgeInsets.only(left: 2),
-  child: Image.asset('assets/pilllogo.png', height: 30),
-),
-           
-
-            Spacer(),
-
-            // أيقونة البروفايل أو غيره في اليمين
-            //Icon(Icons.person, color: Colors.black),
-          ],
+          ),
         ),
       ),
-    ),
-  ),
-),
-
-
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
@@ -153,7 +150,7 @@ appBar: PreferredSize(
                 height: 44,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color:Color(0xEDF1F5FF),
+                  color: Color(0xEDF1F5FF),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextField(
@@ -224,67 +221,41 @@ appBar: PreferredSize(
                 ),
               ),
               const SizedBox(height: 15),
-            SizedBox(
-  height: 210, // ارتفاع كافي لعرض الكروت
-  child: SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: Row(
-      children: const [
-        SizedBox(width: 16), // بداية فراغ علشان مايبقاش لازق في الحافة
-
-        FeatureIcon(
-          image: 'assets/sypmptomchecker.png',
-          label: "Symptoms Diagnoses",
-          description:
-              "Describe your symptoms\nand get AI-powered\ndrug suggestions.",
-        ),
-        SizedBox(width: 12),
-
-        FeatureIcon(
-          image: 'assets/pointer.png',
-          label: "Nearest Pharmacy",
-          description:
-              "Find pharmacies near\nyou with available\nstock.",
-        ),
-        SizedBox(width: 12),
-
-        FeatureIcon(
-          image: 'assets/barcode_9113724.png',
-          label: "Barcode Scanner",
-          description:
-              "Scan a drug’s barcode\nto view full details,\nusage, and safety\ninformation.",
-        ),
-        SizedBox(width: 12),
-
-        FeatureIcon(
-          image: 'assets/document-scanner_11857562.png',
-          label: "Prescription Reader",
-          description:
-              "Upload a prescription and\nAI will identify the drugs\nlisted inside.",
-        ),
-        SizedBox(width: 12),
-
-        FeatureIcon(
-          image: 'assets/body-analysis.png',
-          label: "Body Check",
-          description:
-              "Upload your body result\nand get personalized\ninsights.",
-        ),
-        SizedBox(width: 12),
-
-        FeatureIcon(
-          image: 'assets/alt_drug.png',
-          label: "Drug Recommendation",
-          description:
-              "Find safe and effective\nalternatives for any drug.",
-        ),
-
-        SizedBox(width: 16), // نهاية فراغ
-      ],
-    ),
-  ),
-),
-
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  FeatureIcon(
+                    image: 'assets/sypmptomchecker.png',
+                    label: "Symptoms Diagnoses",
+                    description:
+                        "Describe your symptoms\nand get AI-powered\ndrug suggestions.",
+                  ),
+                  FeatureIcon(
+                    image: 'assets/pointer.png',
+                    label: "Nearest Pharmacy",
+                    description:
+                        "Find pharmacies near\nyou with available\nstock.",
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: const [
+                  FeatureIcon(
+                    image: 'assets/barcode_9113724.png',
+                    label: "Barcode Scanner",
+                    description:
+                        "Scan a drug’s barcode\nto view full details,\nusage, and safety\ninformation.",
+                  ),
+                  FeatureIcon(
+                    image: 'assets/document-scanner_11857562.png',
+                    label: "Prescription Scan",
+                    description:
+                        "Upload a prescription image\nand get instant drug\nidentification.",
+                  ),
+                ],
+              ),
               const SizedBox(height: 30),
             ],
           ),
@@ -310,15 +281,15 @@ appBar: PreferredSize(
             // Add more cases later if needed
           }
         },
-        backgroundColor:Color(0xFF0C1467),
+        backgroundColor: Color(0xFF0C1467),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home, size: 35), label: ""),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/nearestPharmacy.png'),
-                  size: 35),
+              icon:
+                  ImageIcon(AssetImage('assets/nearestPharmacy.png'), size: 35),
               label: ""),
           BottomNavigationBarItem(
               icon: ImageIcon(AssetImage('assets/drugRecommendationIcon.png'),
