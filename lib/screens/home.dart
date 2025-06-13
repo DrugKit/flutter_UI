@@ -221,40 +221,116 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 ),
               ),
               const SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  FeatureIcon(
-                    image: 'assets/sypmptomchecker.png',
-                    label: "Symptoms Diagnoses",
-                    description:
-                        "Describe your symptoms\nand get AI-powered\ndrug suggestions.",
-                  ),
-                  FeatureIcon(
-                    image: 'assets/pointer.png',
-                    label: "Nearest Pharmacy",
-                    description:
-                        "Find pharmacies near\nyou with available\nstock.",
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  FeatureIcon(
-                    image: 'assets/barcode_9113724.png',
-                    label: "Barcode Scanner",
-                    description:
-                        "Scan a drug’s barcode\nto view full details,\nusage, and safety\ninformation.",
-                  ),
-                  FeatureIcon(
-                    image: 'assets/document-scanner_11857562.png',
-                    label: "Prescription Scan",
-                    description:
-                        "Upload a prescription image\nand get instant drug\nidentification.",
-                  ),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    // First column
+                    Column(
+                      children: const [
+                        FeatureIcon(
+                          image: 'assets/document-scanner_11857562.png',
+                          label: "Prescription Reader",
+                          description: Text(
+                            "Upload a prescription image\nand get instant drug\nidentification.",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF6B6B6B), // لون رمادي أنعم
+                              fontWeight: FontWeight.w400,
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        FeatureIcon(
+                          image: 'assets/barcode_9113724.png',
+                          label: "Barcode Scanner",
+                          description: Text(
+                            "Scan a drug’s barcode to view\nfull details, usage, and safety\ninformation.",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF6B6B6B), // لون رمادي أنعم
+                              fontWeight: FontWeight.w400,
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 20),
+                    // Second column
+                    Column(
+                      children: const [
+                        FeatureIcon(
+                          image: 'assets/NEPH.png',
+                          label: "Nearest Pharmacy",
+                          description: Text(
+                            "Find the closest\npharmacy to your\ncurrent location.",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF6B6B6B), // لون رمادي أنعم
+                              fontWeight: FontWeight.w400,
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        FeatureIcon(
+                          image: 'assets/sypmptomchecker.png',
+                          label: "Symptoms Diagnoses",
+                          description: Text(
+                            "Describe your symptoms\nand get AI-powered\ndrug suggestions.",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF6B6B6B), // لون رمادي أنعم
+                              fontWeight: FontWeight.w400,
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 20),
+                    // Third column (scroll to reveal)
+                    Column(
+                      children: const [
+                        FeatureIcon(
+                          image: 'assets/me.png',
+                          label: "InBody Insights",
+                          description: Text(
+                            "Upload your InBody result\nand get personalized\nhealth insights.",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF6B6B6B), // لون رمادي أنعم
+                              fontWeight: FontWeight.w400,
+                              height: 1.1,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        FeatureIcon(
+                          image: 'assets/thumbs-up.png',
+                          label: "Drug Recommendation",
+                          description: Text(
+                            "Find safe and\neffective alternatives\nto your medications.",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF6B6B6B), // لون رمادي أنعم
+                              fontWeight: FontWeight.w400,
+                              height: 1.4,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 30),
             ],
@@ -381,6 +457,7 @@ class CategoryScroll extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
+                                color: Color(0xFF0C1467),
                               ),
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
@@ -408,7 +485,7 @@ class CategoryScroll extends StatelessWidget {
 class FeatureIcon extends StatelessWidget {
   final String image;
   final String label;
-  final String description;
+  final Widget description;
 
   const FeatureIcon({
     super.key,
@@ -433,14 +510,7 @@ class FeatureIcon extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 2),
-        Text(
-          description,
-          style: const TextStyle(
-            fontSize: 11,
-            color: Color.fromARGB(255, 149, 143, 143),
-          ),
-          textAlign: TextAlign.center,
-        ),
+        description, // ✅ لأنك بعتّيه كـ Widget خلاص
       ],
     );
   }

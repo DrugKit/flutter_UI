@@ -28,8 +28,6 @@ import 'package:drugkit/screens/setnewpass_done.dart';
 import 'package:drugkit/screens/home.dart';
 import 'package:drugkit/screens/drug_categories.dart';
 import 'package:drugkit/screens/drugdetails.dart';
-// import 'package:drugkit/screens/drug.dart';
-//import 'package:drugkit/screens/prescriptionscan_loading.dart';
 import 'package:drugkit/screens/prescription_data.dart';
 import 'package:drugkit/screens/nearestpharmacy.dart ';
 import 'package:drugkit/screens/scanner.dart';
