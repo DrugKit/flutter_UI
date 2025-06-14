@@ -3,6 +3,7 @@ import 'package:drugkit/logic/chatbot/chat_cubit.dart';
 import 'package:drugkit/logic/forget_password/forget_password_cubit.dart';
 import 'package:drugkit/logic/login/login_cubit.dart';
 import 'package:drugkit/logic/nearest_pharmacy/nearest_pharmacy_cubit.dart';
+import 'package:drugkit/logic/prescription/PrescriptionUploadCubit.dart';
 import 'package:drugkit/logic/prescription_history/prescription_history_cubit.dart';
 import 'package:drugkit/logic/search/search_cubit.dart';
 import 'package:drugkit/logic/verification/verification_cubit.dart';
@@ -30,19 +31,21 @@ import 'package:drugkit/screens/drug_categories.dart';
 import 'package:drugkit/screens/drugdetails.dart';
 import 'package:drugkit/screens/prescription_data.dart';
 import 'package:drugkit/screens/nearestpharmacy.dart ';
-import 'package:drugkit/screens/scanner.dart';
 import 'package:drugkit/screens/chatbot.dart';
 import 'package:drugkit/Navigation/routes_names.dart ';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'package:drugkit/logic/barcode/BarcodeScanCubit.dart';
+import 'package:drugkit/screens/barcode.dart';
+import 'package:drugkit/screens/barcode_scan_result_screen.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter(); // ⬅️ مهم جدًا لتهيئة Hive في التطبيقات Flutter
+  await Hive.initFlutter();
   await StorageData.init();
-  // ⬅️ لازم ده الأول
-  await DioHelper.init();
-  DioHelper().updateToken(); // ⬅️ بعد init
+  await DioHelper.init(); // تهيئة DioHelper هنا
+  DioHelper().updateToken(); // تحديث التوكن بعد التهيئة
   runApp(const DrugKitApp());
 }
 
@@ -51,35 +54,61 @@ class DrugKitApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SearchCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SearchCubit>(
+          create: (context) => SearchCubit(),
+        ),
+        BlocProvider<PrescriptionUploadCubit>(
+          create: (context) => PrescriptionUploadCubit(),
+        ),
+        BlocProvider<LoginCubit>(
+          create: (context) => LoginCubit(),
+        ),
+        BlocProvider<ForgetPasswordCubit>(
+          create: (context) => ForgetPasswordCubit(),
+        ),
+        BlocProvider<VerificationCubit>(
+          create: (context) => VerificationCubit(),
+        ),
+        BlocProvider<NearestPharmacyCubit>(
+          create: (context) => NearestPharmacyCubit(),
+        ),
+        BlocProvider<PrescriptionHistoryCubit>(
+          create: (context) => PrescriptionHistoryCubit(),
+        ),
+        BlocProvider<ChatCubit>(
+          create: (context) => ChatCubit(),
+        ),
+        BlocProvider<GetcategoryCubit>(
+          create: (context) => GetcategoryCubit(),
+        ),
+        // **هذا هو BarcodeScanCubit الذي يجب أن يكون هنا**
+        BlocProvider<BarcodeScanCubit>(
+          create: (context) => BarcodeScanCubit(),
+        ),
+      ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: false, // Hide debug banner
+        debugShowCheckedModeBanner: false,
         title: 'DrugKit',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        //home: CategoryDrugsScreen(categoryName: "home")
-        // home: CategoryDrugsScreen(categoryName: 'Heart'),  // Change this to the desired initial screen
-        //home: LoginScreen(),  // Change this to the desired initial screen
-        initialRoute: '/welcome',
+        initialRoute: RouteNames.welcome,
         routes: {
+          RouteNames.barcodeScan: (context) => const BarcodeScannerScreen(),
+          RouteNames.barcodeScanResult: (context) => BarcodeScanResultScreen(
+                medicines: ModalRoute.of(context)!.settings.arguments as List<dynamic>,
+              ),
           RouteNames.welcome: (context) => const WelcomeScreen(),
           RouteNames.signup: (context) => const SignUpScreen(),
-          // RouteNames.verifySignup: (context) => const VerificationCodeScreen(),
           RouteNames.signupDone: (context) => const SuccessScreen(),
-          RouteNames.login: (context) => BlocProvider(
-                create: (_) => LoginCubit(),
-                child: const LoginScreen(),
-              ),
+          // قم بإزالة BlocProvider من هنا إذا كان موجودًا
+          RouteNames.login: (context) => const LoginScreen(), // لا تحتاج لـ BlocProvider هنا إذا كان موجودًا في MultiBlocProvider
           RouteNames.forgotPassword: (context) => const ForgotPasswordScreen(),
           RouteNames.verifyEmail: (context) {
-            final args = ModalRoute.of(context)!.settings.arguments
-                as Map<String, dynamic>;
-            return BlocProvider(
-              create: (_) => ForgetPasswordCubit(),
-              child: VerifyEmailScreen(email: args['email']),
-            );
+            final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+            return VerifyEmailScreen(email: args['email']); // لا تحتاج لـ BlocProvider هنا
           },
           RouteNames.passwordResetDone: (context) =>
               const PasswordResetScreen(),
@@ -99,16 +128,15 @@ class DrugKitApp extends StatelessWidget {
                     PrescriptionHistoryCubit()..fetchPrescriptionHistory(),
                 child: const PrescriptionHistoryScreen(),
               ),
-
           RouteNames.nearestPharmacy: (context) => BlocProvider(
                 create: (_) => NearestPharmacyCubit(),
                 child: const NearestPharmacyScreen(),
               ),
           RouteNames.drugRecommendation: (context) =>
               const DrugRecommendationScreen(),
-          RouteNames.prescriptionScan: (context) => PrescriptionResultScreen(),
+          RouteNames.prescriptionScan: (context) => const PrescriptionResultScreen(),
           RouteNames.chatBot: (context) => BlocProvider(
-                create: (context) => ChatCubit(), // Provide the ChatCubit here
+                create: (context) => ChatCubit(),
                 child: SymptomCheckerScreen(),
               ),
           RouteNames.drugDetails: (context) {
@@ -117,44 +145,25 @@ class DrugKitApp extends StatelessWidget {
             return DrugDetailsScreen(drug: drug);
           },
           RouteNames.drugDetailsNoImage: (context) {
-  final drug = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-  return DrugDetailsNoImageScreen(drug: drug);
+            final drug = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+            return DrugDetailsNoImageScreen(drug: drug);
           },
-
-          // RouteNames.category: (context) => CategoryDrugsScreen(categoryName: 'Heart'), // هنعدل ده ديناميك بعدين
-          // RouteNames.drugDetails: (context) {
-          //   final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-          //   return DrugDetailsScreen(
-          //     // drugName: args['name'],
-          //     // imageUrl: args['imageUrl'],
-          //     // description: args['description'],
-          //     // company: args['company'],
-          //     // sideEffects: args['sideEffects'],
-          //     // price: args['price'],
-          //   );
-          // },
         },
         onGenerateRoute: (settings) {
           if (settings.name == RouteNames.verifySignup) {
             final data = settings.arguments as Map<String, String>;
             return MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (_) => VerificationCubit(),
-                child: VerificationCodeScreen(
-                  email: data['email']!,
-                  password: data['password']!,
-                ),
+              builder: (context) => VerificationCodeScreen(
+                email: data['email']!,
+                password: data['password']!,
               ),
             );
           } else if (settings.name == RouteNames.category) {
             final args = settings.arguments as Map<String, dynamic>;
             return MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (context) => GetcategoryCubit(),
-                child: CategoryDrugsScreen(
-                  categoryName: args['name'],
-                  categoryId: args['categoryId'],
-                ),
+              builder: (context) => CategoryDrugsScreen(
+                categoryName: args['name'],
+                categoryId: args['categoryId'],
               ),
             );
           } else if (settings.name == RouteNames.prescriptionDetails) {
@@ -164,8 +173,6 @@ class DrugKitApp extends StatelessWidget {
                   PrescriptionDetailsScreen(prescription: prescription),
             );
           }
-
-          // باقي الراوتات هنا حسب استخدامك...
           return null;
         },
       ),

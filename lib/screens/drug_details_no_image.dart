@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class DrugDetailsNoImageScreen extends StatelessWidget {
   final Map<String, String> drug;
 
-  const DrugDetailsNoImageScreen({required this.drug});
+  const DrugDetailsNoImageScreen({super.key, required this.drug});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class DrugDetailsNoImageScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSection("Name:", drug['name'] ?? ''),
-            _buildSection("Price:", drug['price'] ?? 'N/A'),
+            // _buildSection("Price:", drug['price'] ?? 'N/A'), // <--- قم بإزالة هذا السطر أو التعليق عليه
             _buildSection("Company:", drug['company'] ?? ''),
             _buildSection("Description:", drug['description'] ?? ''),
             const SizedBox(height: 12),

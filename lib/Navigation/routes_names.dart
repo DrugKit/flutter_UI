@@ -12,7 +12,6 @@ class RouteNames {
   static const String home = '/home';
   static const String category = '/category';
   static const String drugDetails = '/drug_details';
-  static const String prescriptionScan = '/prescriptionScan';
   static const String nearestPharmacy = '/nearestPharmacy';
   static const String chatBot = '/chatBot';
   static const String drugRecommendation = '/drug_recommendation';
@@ -20,6 +19,9 @@ class RouteNames {
   static const String prescriptionDetails = '/view-prescription';
   static const String myPrescriptions = '/my-prescriptions';
   static const String drugDetailsNoImage = '/drugDetailsNoImage';
+  static const String prescriptionScan = '/prescriptionScan';
+  static const String barcodeScanResult = '/barcode_scan_result_screen';
+  static const String barcodeScan = '/barcode';
 
 // static const String interactionChecker = '/interaction_checker'; // بعدين
 }
