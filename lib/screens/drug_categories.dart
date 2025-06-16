@@ -7,7 +7,7 @@ import 'package:drugkit/screens/drugdetails_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:drugkit/screens/drugdetails.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:number_pagination/number_pagination.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CategoryDrugsScreen extends StatefulWidget {
@@ -239,13 +239,21 @@ class _CategoryDrugsScreenState extends State<CategoryDrugsScreen> {
                               1) /
                           9)
                       .ceil();
-                  return NumberPagination(
-                    onPageChanged: _fetchPage,
-                    totalPages: _totalPages,
-                    currentPage: _currentPage,
-                    selectedButtonColor: Colors.blue,
-                    unSelectedButtonColor: Colors.grey.shade300,
-                  );
+                 return NumberPaginator(
+  numberPages: _totalPages,
+  initialPage: _currentPage - 1, // تبدأ من 0
+  onPageChange: (int index) {
+    _fetchPage(index + 1); // عشان index يبدأ من 0
+  },
+  config: NumberPaginatorUIConfig(
+    buttonSelectedBackgroundColor: Color(0xFF0C1467),
+    buttonUnselectedBackgroundColor: Colors.grey.shade300,
+    buttonShape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+  ),
+);
+
                 }
                 return const SizedBox();
               },
