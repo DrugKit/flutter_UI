@@ -83,9 +83,10 @@ class _CategoryDrugsScreenState extends State<CategoryDrugsScreen> {
               height: 20,
             ),
             Container(
+              height: 44,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: primaryColor,
+                color: const Color(0xEDF1F5FF),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: TextField(
@@ -93,11 +94,11 @@ class _CategoryDrugsScreenState extends State<CategoryDrugsScreen> {
                 onChanged: (_) => _onSearchChanged(context),
                 decoration: const InputDecoration(
                   hintText: "Search",
-                  hintStyle: TextStyle(color: Colors.white),
+                  hintStyle: TextStyle(color: Color(0xFF0C1467)),
                   border: InputBorder.none,
-                  icon: Icon(Icons.search, color: Colors.white),
+                  icon: Icon(Icons.search, color: Color(0xFF0C1467)),
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Color(0xFF0C1467)),
               ),
             ),
             const SizedBox(height: 20),
@@ -239,21 +240,20 @@ class _CategoryDrugsScreenState extends State<CategoryDrugsScreen> {
                               1) /
                           9)
                       .ceil();
-                 return NumberPaginator(
-  numberPages: _totalPages,
-  initialPage: _currentPage - 1, // تبدأ من 0
-  onPageChange: (int index) {
-    _fetchPage(index + 1); // عشان index يبدأ من 0
-  },
-  config: NumberPaginatorUIConfig(
-    buttonSelectedBackgroundColor: Color(0xFF0C1467),
-    buttonUnselectedBackgroundColor: Colors.grey.shade300,
-    buttonShape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-  ),
-);
-
+                  return NumberPaginator(
+                    numberPages: _totalPages,
+                    initialPage: _currentPage - 1, // تبدأ من 0
+                    onPageChange: (int index) {
+                      _fetchPage(index + 1); // عشان index يبدأ من 0
+                    },
+                    config: NumberPaginatorUIConfig(
+                      buttonSelectedBackgroundColor: Color(0xFF0C1467),
+                      buttonUnselectedBackgroundColor: Colors.grey.shade300,
+                      buttonShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  );
                 }
                 return const SizedBox();
               },
@@ -267,17 +267,18 @@ class _CategoryDrugsScreenState extends State<CategoryDrugsScreen> {
 
   Widget _buildSearchBar() {
     return Container(
+      height: 44,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF0C1467),
+        color: const Color(0xEDF1F5FF),
         borderRadius: BorderRadius.circular(12),
       ),
       child: const TextField(
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           hintText: 'Search',
-          hintStyle: TextStyle(color: Colors.white),
-          icon: Icon(Icons.search, color: Colors.white),
+          hintStyle: TextStyle(color: Color(0xFF0C1467)),
+          icon: Icon(Icons.search, color: Color(0xFF0C1467)),
           border: InputBorder.none,
         ),
       ),

@@ -148,7 +148,7 @@ class _PrescriptionResultScreenState extends State<PrescriptionResultScreen> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0C1467),
+                    backgroundColor: const Color(0xEDF1F5FF),
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
